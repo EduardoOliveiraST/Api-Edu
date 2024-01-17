@@ -1,0 +1,8 @@
+[default]
+SQLALCHEMY_DATABASE_URI = "Upload_Audience/integration_last_15d.db"
+TITLE = "Api-Edu"
+SECRET_KEY = "uHI0myMdWpq3DuO2gMZ59Q"
+JWT_SECRET_KEY = 'uHI0myMdWpq3DuO2gMZ59Q'
+
+[production]
+SQLALCHEMY_DATABASE_URI = "postgree:///"

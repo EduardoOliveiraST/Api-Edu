@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eduardo API</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/login.css') }}">
+</head>
+<body>
+    <header>
+        <nav>
+            <h4 class="header">Upload Audience</h4>
+            <ul>
+                
+                <li><a href="/">Home</a></li>
+                <li><a href="#">About</a></li>
+                <li><a href="#">Contact</a></li>
+                <li><a href="/login">Login</a></li> <!-- Adicione esta linha para a opção de login -->
+            </ul>
+        </nav>
+    </header>
+    <form action="/valid_user" method="post">
+
+        {{ form.hidden_tag() }}
+        {{ form.user.label  }} {{ form.user() }} 
+        {{ form.password.label }} {{ form.password() }}
+        {{ form.submit() }}
+
+    </form>
+    <div class="error-message">
+        {{ error_message }}
+    </div>
+    
+    <footer>
+        © 2023 Todos os direitos reservados.
+    </footer>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Verifica se há uma mensagem de erro e exibe a mensagem se houver
+            var errorMessage = document.getElementById("error-message").innerText.trim();
+            if (errorMessage) {
+                // Exibe a mensagem de erro
+                displayErrorMessage();
+    
+                // Oculta a mensagem após 3 segundos (3000 milissegundos)
+                setTimeout(hideErrorMessage, 3000);
+            }
+    
+            function displayErrorMessage() {
+                document.getElementById("error-message").style.display = "block";
+            }
+    
+            function hideErrorMessage() {
+                document.getElementById("error-message").style.display = "none";
+            }
+        });
+    </script>
+</body>
+</html>

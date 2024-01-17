@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Listagem de Audiências</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            background: #f7f7f7;
+        }
+
+        header {
+            background-color: #007BFF;
+            color: #fff;
+            padding: 10px;
+            text-align: left;
+            width: 100%;
+            height: 40px;
+            margin-top: -7px;
+        }
+
+        h1 {
+            margin: 0;
+            font-size: 32px;
+        }
+
+        nav {
+            display: flex;
+            justify-content: left;
+            margin-top: 3px;
+            padding: 10px 0;
+        }
+
+        nav a {
+            color: #fff;
+            text-decoration: none;
+            margin: 0 1px;
+            font-size: 16px;
+            margin-right: 19px;
+        }
+
+        .card {
+            max-width: 600px;
+            background: #fff;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 20px;
+            transition: transform 0.3s ease;
+            cursor: pointer;
+            position: relative;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-content {
+            padding: 20px;
+            flex-direction: row;
+            display: flex;
+            justify-content: space-between; /* Adicionado para posicionar o botão à direita */
+            align-items: center; /* Adicionado para centralizar verticalmente o conteúdo do card */
+        }
+
+        .card-heading {
+            font-size: 22px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .card-text {
+            font-size: 16px;
+            color: #555;
+        }
+
+        .back-button {
+            margin-top: 20px;
+            padding: 12px 24px;
+            font-size: 16px;
+            cursor: pointer;
+            background-color: #007BFF;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+
+        .back-button:hover {
+            background-color: #0056b3;
+        }
+
+        .delete-button {
+            background-color: #dc3545;
+            color: #fff;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .delete-button:hover {
+            background-color: #c82333;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <a href="#" onclick="form_post()">Início</a>
+            <a href="#" onclick="signup()">Cadastro de usuário</a>
+        </nav>
+    </header>
+
+    {% for audience in audiences %}
+    <div class="card">
+        <div class="card-content">
+            <div>
+                <div class="card-heading">{{ audience.audience_name }}</div>
+                <div class="card-text">
+                    <strong>Nome do Banco:</strong> {{ audience.db_name }}<br>
+                    <strong>Nome da Tabela:</strong> {{ audience.table_name }}<br>
+                    <strong>Fornecedor:</strong> {{ audience.fornec }}
+                </div>
+            </div>
+            <button class="delete-button" onclick="deleteAudience('{{ audience.id }}')">Apagar</button>
+        </div>
+        <div class="card-footer">
+            <!-- Adicione qualquer conteúdo adicional no rodapé do cartão aqui -->
+        </div>
+    </div>
+    {% endfor %}
+    
+    <div style="display: flex; align-items: center; justify-content: center; flex-grow: 1;">
+        <button class="back-button" onclick="goBack()">Voltar</button>
+    </div>
+
+    <script>
+        function form_post() {
+            window.location.href = "/formulario";
+        }
+        function signup() {
+            window.location.href = "/signup";
+        }
+        function goBack() {
+            window.location.href = "/formulario";
+        }
+
+        function deleteAudience(audienceId) {
+            // Confirmar a exclusão com o usuário
+            var confirmDelete = confirm("Tem certeza que deseja excluir esta audiência?");
+            if (confirmDelete) {
+                // Realize a exclusão fazendo uma requisição DELETE ao servidor
+                fetch(`/delete_audience/${audienceId}`, {
+                    method: 'DELETE',
+                })
+                .then(response => response.json())
+                .then(data => {
+                    alert(data.message);
+                    // Recarregue a página ou atualize os dados conforme necessário
+                    location.reload();
+                })
+                .catch(error => console.error('Erro:', error));
+            }
+        }
+
+        // Restante do seu script JavaScript...
+    </script>
+</body>
+</html>

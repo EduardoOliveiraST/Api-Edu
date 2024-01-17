@@ -1,0 +1,119 @@
+body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    background: #f7f7f7;
+}
+
+header {
+    background-color: #007BFF;
+    color: #fff;
+    padding: 10px;
+    text-align: left;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    height: 40px;
+    margin-top: -7px;
+}
+
+form {
+    text-align: center;
+    align-items: center;
+    justify-content: center;
+    padding: 40px; /* Ajustado para melhor proporção */
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(255, 0, 212, 0.1);
+    max-width: 400px;
+    width: 100%;
+    z-index: 1;
+    position: relative;
+    margin: 0px;
+    margin-top: 120px;
+}
+
+nav {
+    margin-top: 10px; /* Adicionado para dar espaço entre o título e a navegação */
+}
+
+nav ul {
+    display: flex;
+    justify-content: right;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    margin-left: 20%;
+    margin-bottom: 10px;
+}
+
+nav li {
+    display: inline-block;
+    margin-right: 15px;
+    margin-top: -2px;
+}
+
+nav a {
+    color: #fff;
+    text-decoration: rgb(180, 180, 63);
+    font-size: 16px;
+}
+
+label {
+    display: block;
+    margin: 15px 0 5px 0;
+    color: #3f3f3f;
+    font-size: 14px;
+    font-weight: bold;
+    text-align: left;
+}
+
+input,
+select {
+    width: 100%;
+    padding: 10px;
+    margin: 5px 0 5px 0;
+    box-sizing: border-box;
+    border: 2px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+input[type=submit] {
+    font-weight: bold;
+    justify-content: left;
+    width: 200px;
+    padding:7px 80px; 
+    background:#67ff97; 
+    border:0 none;
+    cursor:pointer;
+    -webkit-border-radius: 5px;
+    border-radius: 25px;
+    margin-top: 30px;
+}
+
+footer {
+    margin-top: 120px;
+    text-align: center;
+    font-size: 14px;
+    color: #555;
+}
+
+.error-message {
+    color: #ff0000;
+    font-size: 14px;
+    margin-top: -30px;
+}
+
+.header {
+    display: flex;
+    justify-content: left;
+    margin-bottom: -18px;
+    margin-left: 20px;
+    margin-top: 12px;
+    font-style: "Lucida Console", "Courier New", monospace;
+    font-size: 20px;
+}

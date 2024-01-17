@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro de Usuários</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            background: #f7f7f7;
+        }
+
+        header {
+            background-color: #007BFF;
+            color: #fff;
+            padding: 20px 0; /* Ajustado para preencher a tela */
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            width: 100%; /* Ajustado para ocupar a largura total */
+        }
+
+        form {
+            text-align: center;
+            align-items: center;
+            justify-content: center;
+            background-color: rgba(255, 255, 255, 0.95);
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            max-width: 400px;
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        h2 {
+            color: #333;
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin: 15px 0 5px 0;
+            color: #555;
+            font-size: 14px;
+            font-weight: bold;
+            text-align: left;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            margin: 5px 0 15px 0;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        button {
+            background-color: #2ecc71;
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background-color: #27ae60;
+        }
+
+        footer {
+            margin-top: 20px;
+            text-align: center;
+            font-size: 14px;
+            color: #555;
+        }
+        
+        .back-button {
+            margin-top: 20px;
+            padding: 12px 24px;
+            font-size: 16px;
+            cursor: pointer;
+            background-color: #007BFF;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+
+        .back-button:hover {
+            background-color: #75374e;
+        }
+        
+        .error-message {
+            display: none; /*Oculta a mensagem*/
+            color: #ff0000;
+            font-size: 14px;
+            margin-top: 15px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Cadastro de Usuários</h1>
+    </header>
+    <form action="/create_user" method="post">
+        {{ form.hidden_tag() }}
+        <label for="user">Usuário:</label>
+        {{ form.user() }}
+        
+        <label for="password">Senha:</label>
+        {{ form.password() }}
+
+        <label for="confirm_password">Confirme a Senha:</label>
+        {{ form.confirm_password() }}
+
+        {{ form.submit() }}
+    </form>
+
+    <a href="#" onclick="goBack()" class="back-button"><strong>Voltar</strong></a>
+
+    {% if error_message %}
+    <div class="error-message" id="error-message">{{ error_message }}</div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var errorMessage = document.getElementById("error-message").innerText.trim();
+            if (errorMessage) {
+                alert(errorMessage);
+            }
+        });
+    </script>
+    {% endif %}
+
+    <script>
+        function goBack() {
+            window.location.href = "/formulario";
+        }
+    </script>
+
+    <footer>
+        © 2023 Todos os direitos reservados.
+    </footer>
+</body>
+</html>

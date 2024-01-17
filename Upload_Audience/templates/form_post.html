@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/login.css') }}">
+    <style>
+        .logout-button {
+            background-color: #d9534f;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            font-size: 16px;
+            margin-left: 15px;
+            display: flex;
+            margin-top: -40px;
+            margin-left: 94%;
+        }
+
+        .logout-button:hover {
+            background-color: #c9302c;
+        }
+
+        input[type=submit] {
+            font-weight: bold;
+            display: flex;
+            justify-content: center;
+            width: 200px;
+            padding:7px 80px; 
+            background:#67ff97; 
+            border:0 none;
+            cursor:pointer;
+            -webkit-border-radius: 5px;
+            border-radius: 25px;
+            margin-top: 30px;
+            margin-left: 100px;
+        }
+
+        nav ul {
+            display: flex;
+            justify-content: left;
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            margin-left: 10px;
+            margin-bottom: 10px;
+    }
+        
+        nav li {
+            display: inline-block;
+            margin-right: 15px;
+            margin-top: 4px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <ul>
+                <li><a href="#" onclick="list_audiences()">Listas de audiência</a></li>
+                <li><a href="#" onclick="signup()">Cadastro de usuário</a></li>
+            </ul>
+        </nav>
+        <button class="logout-button" onclick="logout()">Logout</button>
+    </header>
+    
+    <form action="/send_data" method="post" onsubmit="return validateForm()">
+        {{ audience_form.hidden_tag() | escape }}
+
+        <label for="db_name">Nome do Banco de Dados</label> 
+        {{ audience_form.db_name(placeholder="Ex [db_meudb]") | escape }}
+    
+        <label for="table_name">Nome da Tabela:</label>
+        {{ audience_form.table_name(placeholder="Ex [tb_minhatb]") | escape }}
+    
+        <label for="audience_name">Nome da Audiência:</label>
+        {{ audience_form.audience_name() }}
+    
+        <label for="selector">Fornecedor:</label>
+        {{ audience_form.selector() | escape }}
+    
+        {{ audience_form.submit() | escape }}
+    </form>
+    <script>
+        function list_audiences() {
+            window.location.href = "/list_audiences";
+        }
+        
+        function signup() {
+            window.location.href = "/signup";
+        }
+
+        function logout() {
+            window.location.href = "/logout";
+        }
+
+        function validateForm() {
+            var dbName = document.getElementById("db_name").value;
+            var tableName = document.getElementById("table_name").value;
+            var audienceName = document.getElementById("audience_name").value;
+
+            // Verifica se dbName contém "db"
+            if (!dbName.startsWith("db")) {
+                alert("Erro: O nome do banco de dados deve começar com [db].");
+                return false;
+            }
+
+            // Verifica se tableName começa com "[tb]"
+            if (!tableName.startsWith("tb")) {
+                alert("Erro: O nome da tabela deve começar com [tb].");
+                return false;
+            }
+
+            // Verifica se audienceName é alfanumérico ou contém underscore (_)
+            if (!/^[a-zA-Z0-9_]+$/.test(audienceName)) {
+                alert("Erro: O nome da audiência deve ser alfanumérico, podendo conter underscore (_).");
+                return false;
+            }
+            
+            return true
+
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            var errorMessage = "{{ error_message }}".trim();
+            if (errorMessage) {
+                // Exibe a mensagem de erro usando um alerta
+                alert(errorMessage);
+            }
+        });
+
+        document.addEventListener('DOMContentLoaded', function() {
+            var audienceCreated = "{{ success_message }}".trim();
+            if (audienceCreated) {
+                // Exibe a mensagem de erro usando um alerta
+                alert(audienceCreated);
+            }
+        });
+    </script>
+</body>
+</html>
