@@ -6,7 +6,7 @@ from ext.database_ext.list_audiences import *
 auth = HTTPBasicAuth()
 
 USER_DATA = {
-    "admin": "c99407a"
+    "admin": "qwe123@A"
 }
 
 @auth.verify_password
