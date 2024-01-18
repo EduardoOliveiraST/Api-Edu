@@ -6,6 +6,7 @@ from ext.autentication import valid_user_login
 from ext import database_operations
 from flask import Flask, render_template, redirect, url_for, request, session
 from blueprints import rest_api
+from flask_wtf.csrf import CSRFProtect, generate_csrf
 
 
 #--------------------------------- Destinado para cenários de teste -----------------------------------------#
@@ -24,6 +25,7 @@ def create_app():
 #--------------------------------- Destinado para cenários produtivos -----------------------------------------#
 
 app = create_app()
+csrf = CSRFProtect(app)
 
 @app.route('/', methods=['GET'])
 def index():
@@ -97,7 +99,8 @@ def list_audiences():
         user_in_session = database_operations.execute('verify_session', user_id=session['user_id'], session_id=session['session_id'])
         if user_in_session:
             audiences = list_existing_audiences()
-            return render_template('list_audiences.html',audiences=audiences)
+            csrf_token = generate_csrf()
+            return render_template('list_audiences.html',audiences=audiences, csrf_token=csrf_token)
     return redirect(url_for('login'))
 
 @app.route('/delete_audience/<int:audience_id>', methods=['DELETE'])

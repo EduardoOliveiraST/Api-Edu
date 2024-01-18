@@ -106,6 +106,7 @@
             background-color: #c82333;
         }
     </style>
+    
 </head>
 <body>
     <header>
@@ -116,6 +117,7 @@
     </header>
 
     {% for audience in audiences %}
+    <form><input type="hidden" name="csrf_token" id="csrf_token" value="{{ csrf_token }}"></form>
     <div class="card">
         <div class="card-content">
             <div>
@@ -154,16 +156,25 @@
             var confirmDelete = confirm("Tem certeza que deseja excluir esta audiência?");
             if (confirmDelete) {
                 // Realize a exclusão fazendo uma requisição DELETE ao servidor
+                var csrfToken = document.getElementById('csrf_token').value;
                 fetch(`/delete_audience/${audienceId}`, {
                     method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': csrfToken
+            },
                 })
                 .then(response => response.json())
                 .then(data => {
+                    console.log('Data:', data);
                     alert(data.message);
                     // Recarregue a página ou atualize os dados conforme necessário
                     location.reload();
                 })
-                .catch(error => console.error('Erro:', error));
+                .catch(error => {
+                    console.error('Erro ao processar requisição:', error);
+                    alert('Erro ao excluir audiência. Consulte o console para mais detalhes.');
+                });
             }
         }
 
