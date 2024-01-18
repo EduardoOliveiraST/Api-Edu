@@ -2,9 +2,8 @@ import sqlite3
 from ext.database_operations import TABLE_AUDIENCES
 from collections import namedtuple
 
-DATABASE = "Upload_Audience/integration_last_15d.db"
-
 def list_existing_audiences():
+    from ext.database_operations import DATABASE
     with sqlite3.connect(DATABASE) as conn:
         cursor = conn.cursor()
 
@@ -20,6 +19,7 @@ def list_existing_audiences():
             print("Erro:", e)
             
 def list_item_existing_audiences(**kwargs):
+    from ext.database_operations import DATABASE
     with sqlite3.connect(DATABASE) as conn:
         cursor = conn.cursor()
 

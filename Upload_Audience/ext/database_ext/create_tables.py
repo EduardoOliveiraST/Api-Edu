@@ -2,9 +2,8 @@ import sqlite3
 from collections import namedtuple
 from ext.database_operations import TABLE_AUDIENCES, TABLE_USERS, TABLE_SESSIONS
 
-DATABASE = "Upload_Audience/integration_last_15d.db"
-
 def create_table_audiences():
+    from ext.database_operations import DATABASE
     with sqlite3.connect(DATABASE) as conn:
         cursor = conn.cursor()
         
@@ -29,6 +28,7 @@ def create_table_audiences():
             print("Erro:", e)
 
 def create_table_login():
+    from ext.database_operations import DATABASE
     with sqlite3.connect(DATABASE) as conn:
         cursor = conn.cursor()
 
@@ -46,6 +46,7 @@ def create_table_login():
             print("Erro:", e)
 
 def create_table_sessions():
+    from ext.database_operations import DATABASE
     with sqlite3.connect(DATABASE) as conn:
         cursor = conn.cursor()
         
@@ -64,6 +65,7 @@ def create_table_sessions():
             print("Erro:", e)
 
 def list_existing_audiences():
+    from ext.database_operations import DATABASE
     with sqlite3.connect(DATABASE) as conn:
         cursor = conn.cursor()
 

@@ -4,10 +4,10 @@ from flask import redirect, url_for, render_template
 from werkzeug.security import check_password_hash
 from ext.database_operations import execute, TABLE_USERS, TABLE_SESSIONS
 
-DATABASE = "Upload_Audience/integration_last_15d.db"
 
 
 def valid_user_login(**kwargs):
+    from ext.database_operations import DATABASE
     with sqlite3.connect(DATABASE) as conn:
         cursor = conn.cursor()
         """Função que verifica no banco de dados se o usuário e senha existem e se estão corretos.
