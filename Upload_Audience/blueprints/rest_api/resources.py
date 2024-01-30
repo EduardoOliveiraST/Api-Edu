@@ -2,6 +2,7 @@ from flask import jsonify, abort
 from flask_restful import Resource
 from flask_httpauth import HTTPBasicAuth
 from ext.database_ext.list_audiences import *
+from ext import database_operations
 
 auth = HTTPBasicAuth()
 
@@ -48,5 +49,13 @@ class AudienceItemResource(Resource):
             }
 
             return jsonify(json)
+        except:
+            return abort(404)
+
+class DeleteAudienceWithNoSuchTable(Resource):
+    @auth.login_required
+    def get(self, audience_id):
+        try:
+            database_operations.execute('delete_audience', audience_id=audience_id)
         except:
             return abort(404)
