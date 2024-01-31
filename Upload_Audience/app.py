@@ -7,6 +7,7 @@ from ext import database_operations
 from flask import Flask, render_template, redirect, url_for, request, session
 from blueprints import rest_api
 from flask_wtf.csrf import CSRFProtect, generate_csrf
+import os
 
 def validate_session():
     if 'session_id' in session:
@@ -114,4 +115,5 @@ def logout():
     return redirect(url_for('login'))
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host="0.0.0.0", port=port, debug=True)

@@ -1,5 +1,5 @@
 import sqlite3
-from ext.config import TABLE_AUDIENCES, TABLE_USERS, TABLE_SESSIONS, DATABASE
+from ext.config import TABLE_AUDIENCES, TABLE_USERS, TABLE_SESSIONS
 
 def create_table_audiences(DATABASE):
     with sqlite3.connect(DATABASE) as conn:

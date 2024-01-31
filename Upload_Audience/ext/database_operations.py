@@ -10,16 +10,18 @@ create_table_sessions(DATABASE)
 create_table_login(DATABASE)
 
 def table_and_database_exists(cursor_principal, **kwargs):
-    databases_path = 'C:/Users/EduardoOliveira/Scripts/databases/'
+    
+    diretorio_modulo = os.path.join(os.path.dirname(os.path.realpath(__file__)), "databases/").replace("\\", "/") if os.name == "posix" else os.path.join(os.path.dirname(os.path.realpath(__file__)), "databases\\")
     try:
-        if os.path.exists(f'{databases_path}{kwargs["db_name"]}.db'):
-            with sqlite3.connect(f'{databases_path}{kwargs["db_name"]}.db') as conn:
+        diretorio_modulo = diretorio_modulo + kwargs["db_name"] + '.db'
+        if os.path.exists(diretorio_modulo): # Se database existe
+            with sqlite3.connect(diretorio_modulo) as conn:
                 cursor = conn.cursor()
                 query = f"SELECT * FROM {kwargs['table_name']}"
                 cursor.execute(query)
-                existing_entry = cursor.fetchone()
+                existing_entry = bool(cursor.fetchone())
 
-            if existing_entry:
+            if existing_entry: # Se tabela existe
                 try:
                     cursor_principal.execute("BEGIN")
                     query = f'INSERT INTO {TABLE_AUDIENCES} (id_user_insert, id_user_session, db_name, table_name, audience_name, fornec)VALUES (?, ?, ?, ?, ?, ?)'
