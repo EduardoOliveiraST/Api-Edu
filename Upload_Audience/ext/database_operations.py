@@ -10,12 +10,20 @@ create_table_sessions(DATABASE)
 create_table_login(DATABASE)
 
 def table_and_database_exists(cursor_principal, **kwargs):
+
+    """
+    Operação central para verificar se o banco de dados e tabela inseridos pelo usuário no cadastro de audiências são existentes no lake (atualmente SQLITE3)
+    Aqui é possível barrar esse erro de inserção por parte do usuário.
+
+    Audiências que passam por esse endpoint, foram verificadas pela função insert_audience() e por javaScript no template form_post, garantindo que a requisição de audiência só seja criada se o banco e tabela existirem.
+
+    """
     
-    diretorio_modulo = os.path.join(os.path.dirname(os.path.realpath(__file__)), "databases/").replace("\\", "/") if os.name == "posix" else os.path.join(os.path.dirname(os.path.realpath(__file__)), "databases\\")
+    databases_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)), "databases/").replace("\\", "/") if os.name == "posix" else os.path.join(os.path.dirname(os.path.realpath(__file__)), "databases\\")
     try:
-        diretorio_modulo = diretorio_modulo + kwargs["db_name"] + '.db'
-        if os.path.exists(diretorio_modulo): # Se database existe
-            with sqlite3.connect(diretorio_modulo) as conn:
+        database_dir = databases_dir + kwargs["db_name"] + '.db'
+        if os.path.exists(database_dir): # Se database existe
+            with sqlite3.connect(database_dir) as conn:
                 cursor = conn.cursor()
                 query = f"SELECT * FROM {kwargs['table_name']}"
                 cursor.execute(query)
@@ -41,25 +49,34 @@ def table_and_database_exists(cursor_principal, **kwargs):
     except Exception as e:
             if 'no such table' in e.args[0]:
                 return render_template('form_post.html', audience_form=kwargs['audience_form'], error_message=f'[ERROR] A tabela {kwargs["table_name"]} não existe.')
-    
+            
+            
+def verify_session(**kwargs):
 
-def execute(func, **kwargs):
+    """
+    Todo endpoint passa por aqui, antes de qualquer chamada em qualquer endpoit essa função é chamada, para garantir que o usuário já realizou o login, e está manipulando os endpoints a partir desse login 
     
-    def verify_session(**kwargs):
-        try:
+    """
+
+
+    try:
+        with sqlite3.connect(DATABASE) as conn:
+            cursor = conn.cursor()
             query = f'SELECT * FROM {TABLE_SESSIONS} WHERE id_user = ? or id_user_session = ?'
             cursor.execute(query, (kwargs['user_id'],kwargs['session_id'],))
+        
+        existing_entry = cursor.fetchall()
 
-            existing_entry = cursor.fetchall()
+        if existing_entry:
+            return True
+        else:
+            return False
+        
+    except sqlite3.Error as e:
+        conn.rollback()
+        print("Erro:", e)
 
-            if existing_entry:
-                return True
-            else:
-                return False
-            
-        except sqlite3.Error as e:
-            conn.rollback()
-            print("Erro:", e)
+def execute(func, **kwargs):
     
     def remove_session(**kwargs):
         try:

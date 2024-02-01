@@ -2,6 +2,8 @@ from flask import Blueprint
 from flask_restful import Api
 from .resources import AudienceItemResource, AudienceResource, DeleteAudienceWithNoSuchTable
 
+"""O endpoint(blueprint) '/api/v1/list_audiences' realiza a busca no banco de dados da aplicação [integration_last_15d] para disponibilizar o json que servirá de insumo para outros processos."""
+
 bp = Blueprint("rest_api", __name__, url_prefix='/api/v1')
 api = Api(bp)
 

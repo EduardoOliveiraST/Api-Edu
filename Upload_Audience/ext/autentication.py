@@ -2,7 +2,7 @@ import sqlite3
 from secrets import token_urlsafe
 from flask import redirect, url_for, render_template, flash
 from werkzeug.security import check_password_hash
-from ext.database_operations import execute
+from ext.database_operations import verify_session
 from ext.config import TABLE_USERS, TABLE_SESSIONS, DATABASE
 
 def valid_user_login(**kwargs):
@@ -23,7 +23,7 @@ def valid_user_login(**kwargs):
             if existing_entry:
                 session_id = token_urlsafe(16)
                 user_id, password_encrypted_database = existing_entry[0], existing_entry[2]
-                in_session = execute('verify_session', user_id=user_id, session_id=session_id)
+                in_session = verify_session(user_id=user_id, session_id=session_id)
 
                 if not in_session:
                     if check_password_hash(password_encrypted_database, password):

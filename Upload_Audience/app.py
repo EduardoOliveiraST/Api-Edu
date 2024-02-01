@@ -11,7 +11,7 @@ import os
 
 def validate_session():
     if 'session_id' in session:
-        user_in_session = database_operations.execute('verify_session', user_id=session['user_id'], session_id=session['session_id'])
+        user_in_session = database_operations.verify_session(user_id=session['user_id'], session_id=session['session_id'])
         if user_in_session:
             return True
         return False
