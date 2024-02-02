@@ -57,7 +57,7 @@
         }
 
         .card-content {
-            padding: 20px;
+            padding: 30px;
             flex-direction: row;
             display: flex;
             justify-content: space-between; /* Adicionado para posicionar o botão à direita */
@@ -125,7 +125,8 @@
                 <div class="card-text">
                     <strong>Nome do Banco:</strong> {{ audience.db_name }}<br>
                     <strong>Nome da Tabela:</strong> {{ audience.table_name }}<br>
-                    <strong>Fornecedor:</strong> {{ audience.fornec }}
+                    <strong>Parceiro:</strong> {{ audience.parceiro }}<br>
+                    <strong>Adv_Name:</strong> {{ audience.advertiser_name }}
                 </div>
             </div>
             <button class="delete-button" onclick="deleteAudience('{{ audience.id }}')">Apagar</button>

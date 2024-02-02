@@ -23,12 +23,13 @@ class AudienceResource(Resource):
         json = {
             "Created_Audiences": [
                 {
-                    "audience_id": item[0],
-                    "db_name": item[3],
-                    "table_name": item[4],
-                    "audience_name": item[5],
-                    "platform": item[6]
-                } for item in audiences
+                    "audience_id": audience[0],
+                    "db_name": audience[3],
+                    "table_name": audience[4],
+                    "audience_name": audience[5],
+                    "platform": audience[6],
+                    "advertiser_name": audience[7]
+                } for audience in audiences
             ]
         }
 
@@ -38,14 +39,15 @@ class AudienceItemResource(Resource):
     @auth.login_required
     def get(self, audience_id):
         try:
-            audiences = list_item_existing_audiences(id_audience=audience_id)
+            audience = list_item_existing_audiences(id_audience=audience_id)
             json = {
                 
-                    "audience_id": audiences[0][0],
-                    "db_name": audiences[0][3],
-                    "table_name": audiences[0][4],
-                    "audience_name": audiences[0][5],
-                    "platform": audiences[0][6]
+                    "audience_id": audience[0][0],
+                    "db_name": audience[0][3],
+                    "table_name": audience[0][4],
+                    "audience_name": audience[0][5],
+                    "platform": audience[0][6],
+                    "advertiser_name": audience[0][7]
             }
 
             return jsonify(json)

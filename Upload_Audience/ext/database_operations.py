@@ -32,8 +32,8 @@ def table_and_database_exists(cursor_principal, **kwargs):
             if existing_entry: # Se tabela existe
                 try:
                     cursor_principal.execute("BEGIN")
-                    query = f'INSERT INTO {TABLE_AUDIENCES} (id_user_insert, id_user_session, db_name, table_name, audience_name, fornec)VALUES (?, ?, ?, ?, ?, ?)'
-                    cursor_principal.execute(query,(kwargs['id_user_insert'], kwargs['id_user_session'], kwargs['db_name'], kwargs['table_name'], kwargs['audience_name'], kwargs['fornec'],))
+                    query = f'INSERT INTO {TABLE_AUDIENCES} (id_user_insert, id_user_session, db_name, table_name, audience_name, parceiro, advertiser_name) VALUES (?, ?, ?, ?, ?, ?, ?)'
+                    cursor_principal.execute(query,(kwargs['id_user_insert'], kwargs['id_user_session'], kwargs['db_name'], kwargs['table_name'], kwargs['audience_name'], kwargs['parceiro'], kwargs['advertiser_name'],))
                     cursor_principal.execute("COMMIT")
 
                     success_message = 'Audiência criada com êxito.'
@@ -54,7 +54,7 @@ def table_and_database_exists(cursor_principal, **kwargs):
 def verify_session(**kwargs):
 
     """
-    Todo endpoint passa por aqui, antes de qualquer chamada em qualquer endpoit essa função é chamada, para garantir que o usuário já realizou o login, e está manipulando os endpoints a partir desse login 
+    Todo endpoint passa por aqui, antes de qualquer chamada em qualquer rota essa função é chamada, para garantir que o usuário já realizou o login, e está manipulando os endpoints a partir desse login 
     
     """
 
@@ -129,8 +129,8 @@ def execute(func, **kwargs):
             return jsonify({'success': False, 'message': f'Erro ao excluir a audiência: {str(e)}'})
 
     def insert_audience(**kwargs):
-        query = f'SELECT * FROM {TABLE_AUDIENCES} WHERE audience_name = ?  AND fornec = ?'
-        cursor.execute(query, (kwargs['audience_name'], kwargs['fornec'],))
+        query = f'SELECT * FROM {TABLE_AUDIENCES} WHERE audience_name = ?  AND parceiro = ?'
+        cursor.execute(query, (kwargs['audience_name'], kwargs['parceiro'],))
 
         exists = bool(cursor.fetchone())
         if exists:

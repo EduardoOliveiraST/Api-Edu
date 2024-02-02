@@ -62,7 +62,7 @@ def send_data():
     if in_session: 
         audience_form = AudiencesForm(request.form)
         if audience_form.validate_on_submit():
-            return database_operations.execute('insert_audience', audience_form=audience_form, id_user_insert=session['user_id'], id_user_session=session['session_id'], db_name=request.form['db_name'], table_name=request.form['table_name'], audience_name=request.form['audience_name'], fornec=request.form['selector'])
+            return database_operations.execute('insert_audience', audience_form=audience_form, id_user_insert=session['user_id'], id_user_session=session['session_id'], db_name=request.form['db_name'], table_name=request.form['table_name'], audience_name=request.form['audience_name'], parceiro=request.form['parceiro'], advertiser_name=request.form['advertiser_name'])
         
         return redirect(url_for('login'))
 

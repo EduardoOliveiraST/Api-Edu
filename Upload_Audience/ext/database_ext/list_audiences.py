@@ -9,7 +9,7 @@ def list_existing_audiences():
         try:
             cursor.execute(f'''SELECT * FROM {TABLE_AUDIENCES}''')
             list_tuple_audiences = cursor.fetchall()
-            MinhaClasse = namedtuple('Audiences', ['id','id_user_insert', 'id_user_session', 'db_name', 'table_name', 'audience_name', 'fornec'])
+            MinhaClasse = namedtuple('Audiences', ['id','id_user_insert', 'id_user_session', 'db_name', 'table_name', 'audience_name', 'parceiro', 'advertiser_name'])
             audiences = [MinhaClasse(*tupla) for tupla in list_tuple_audiences]
             return audiences
         
@@ -24,7 +24,7 @@ def list_item_existing_audiences(**kwargs):
         try:
             cursor.execute(f"SELECT * FROM {TABLE_AUDIENCES} WHERE id = ?", (kwargs['id_audience'],))
             list_tuple_audiences = cursor.fetchall()
-            MinhaClasse = namedtuple('Audiences', ['id','id_user_insert', 'id_user_session', 'db_name', 'table_name', 'audience_name', 'fornec'])
+            MinhaClasse = namedtuple('Audiences', ['id','id_user_insert', 'id_user_session', 'db_name', 'table_name', 'audience_name', 'parceiro', 'advertiser_name'])
             audiences = [MinhaClasse(*tupla) for tupla in list_tuple_audiences]
             return audiences
         

@@ -14,8 +14,8 @@ def create_table_audiences(DATABASE):
                     db_name TEXT,
                     table_name TEXT,
                     audience_name TEXT,
-                    fornec TEXT
-                    usuario_id INTEGER,
+                    parceiro TEXT,
+                    advertiser_name TEXT,
                     FOREIGN KEY (id_user_insert) REFERENCES {TABLE_USERS}(id)
                 )
             ''')

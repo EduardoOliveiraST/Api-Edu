@@ -80,8 +80,11 @@
         <label for="audience_name">Nome da Audiência:</label>
         {{ audience_form.audience_name() }}
 
-        <label for="selector">Fornecedor:</label>
-        {{ audience_form.selector() | escape }}
+        <label for="parceiro">Parceiro:</label>
+        {{ audience_form.parceiro() | escape }}
+
+        <label for="advertiser_name">Nome do advertiser (TikTok):</label>
+        {{ audience_form.advertiser_name() | escape }}
     
         {{ audience_form.submit() | escape }}
     </form>
@@ -106,12 +109,6 @@
             // Verifica se dbName contém "db"
             if (!dbName.startsWith("db")) {
                 alert("Erro: O nome do banco de dados deve começar com [db].");
-                return false;
-            }
-
-            // Verifica se tableName começa com "[tb]"
-            if (!tableName.startsWith("tb")) {
-                alert("Erro: O nome da tabela deve começar com [tb].");
                 return false;
             }
 

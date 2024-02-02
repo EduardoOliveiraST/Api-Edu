@@ -9,9 +9,10 @@ class LoginForm(FlaskForm):
 
 class AudiencesForm(FlaskForm):
     db_name = StringField('Nome do Banco de Dados', validators=[DataRequired(), Length(min=6, max=20)])
-    table_name = StringField('Nome da Tabela', validators=[DataRequired(), Length(min=6, max=20)])
+    table_name = StringField('Nome da Tabela', validators=[DataRequired(), Length(min=6, max=60)])
     audience_name = StringField('Nome da Audiência', validators=[DataRequired(), Length(min=6, max=50)])
-    selector = SelectField('Fornecedor', choices=[('Tiktok', 'Tiktok'), ('Salesforce', 'Salesforce')], validators=[DataRequired()])  
+    parceiro = SelectField('parceiro', choices=[('Tiktok', 'Tiktok'), ('Salesforce', 'Salesforce')], validators=[DataRequired()])
+    advertiser_name = SelectField('advertiser_name', choices=[('', ''), ('Serasa_Limpa_Nome', 'Serasa_Limpa_Nome'), ('Serasa_Score', 'Serasa_Score'), ('Serasa_Premium', 'Serasa_Premium'), ('Serasa_Ecred', 'Serasa_Ecred'), ('Serasa_Carteira_Digital', 'Serasa_Carteira_Digital')])    
     submit = SubmitField('Criar Audiência')
 
 class CadastroUserForm(FlaskForm):
