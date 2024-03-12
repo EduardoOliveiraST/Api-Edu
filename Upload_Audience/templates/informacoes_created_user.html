@@ -73,13 +73,14 @@
 <body>
     <div>
         <h1>Usuário criado!</h1>
-        <p><strong>Usuário:</strong> {{ user }}</p>
+        <p><strong>Usuário:</strong> {{ username }}</p>
         
         <button onclick="voltar()">Voltar</button>
 
         <script>
             function voltar() {
-                window.location.href = "/signup";
+                var url = "{{ url_for('signup', user=user) }}";
+                window.location.href = url;
             }
         </script>
     </div>

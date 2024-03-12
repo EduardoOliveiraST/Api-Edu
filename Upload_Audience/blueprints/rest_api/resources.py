@@ -20,20 +20,39 @@ class AudienceResource(Resource):
     @auth.login_required
     def get(self):
         audiences = list_existing_audiences()
+        audiences_sf = list_existing_audiences_salesforce()
         json = {
             "Created_Audiences": [
                 {
                     "audience_id": audience[0],
-                    "db_name": audience[3],
-                    "table_name": audience[4],
-                    "audience_name": audience[5],
-                    "platform": audience[6],
-                    "advertiser_name": audience[7]
+                    "db_name": audience[2],
+                    "table_name": audience[3],
+                    "audience_name": audience[4],
+                    "platform": audience[5],
+                    "advertiser_name": audience[6]
                 } for audience in audiences
             ]
         }
 
-        return jsonify(json)
+        json_sf = {
+            "Created_Audiences": [
+                {
+                  "audience_id": audience[0],
+                  "db_name_sf": audience[2],
+                  "table_name_sf": audience[3],
+                  "file_name": audience[4],
+                  "platform": audience[5],
+                  "sftp_path": audience[6].replace('\\', '\\\\')
+                  } for audience in audiences_sf
+            ]
+        }
+        # Combine the audience lists
+        combined_audiences = json["Created_Audiences"] + json_sf["Created_Audiences"]
+
+        # Create the final JSON structure
+        final_json = {"Created_Audiences": combined_audiences}
+
+        return jsonify(final_json)
 
 class AudienceItemResource(Resource):
     @auth.login_required

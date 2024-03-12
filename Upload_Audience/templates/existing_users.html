@@ -74,13 +74,14 @@
 </head>
 <body>
     <main>
-        <h1>O usuário {{ user }}<span style="white-space: nowrap"></span> é existente.</h1>
+        <h1>O usuário {{ username }}<span style="white-space: nowrap"></span> é existente.</h1>
         <button class="back-button" onclick="goBack()">Voltar</button>
     </main>
 
     <script>
         function goBack() {
-            window.location.href = "/signup";
+            var url = "{{ url_for('signup', user=user) }}";
+            window.location.href = url;
         }
     </script>
 </body>
