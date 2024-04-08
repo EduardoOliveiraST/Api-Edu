@@ -41,25 +41,26 @@ def table_and_database_exists(cursor_principal, **kwargs):
     Audiências que passam por esse endpoint, foram verificadas pela função insert_audience() e por javaScript no template form_post, garantindo que a requisição de audiência só seja criada se o banco e tabela existirem.
 
     """
-    file_name = 'list_existing_databases.csv' # Esse arquivo precisa existir e estar populado (Operação manual de inserção)
-    file_databases_path = os.path.dirname(os.path.realpath(__file__)).replace("\\", "/") + f'/{file_name}' if os.name == "posix" else os.path.dirname(os.path.realpath(__file__)) + f'\\{file_name}'
-    df = pd.read_csv(file_databases_path, sep=';')
-    df['joined_column'] = df['database'].astype(str) +'.'+ df['table_name'].astype(str) # Esse campo não pode ser formatado com f-string, comportamento muda. Concatenação de valores foi utilizado, não formatação.
+    return insert()
+    # file_name = 'list_existing_databases.csv' # Esse arquivo precisa existir e estar populado (Operação manual de inserção)
+    # file_databases_path = os.path.dirname(os.path.realpath(__file__)).replace("\\", "/") + f'/{file_name}' if os.name == "posix" else os.path.dirname(os.path.realpath(__file__)) + f'\\{file_name}'
+    # df = pd.read_csv(file_databases_path, sep=';')
+    # df['joined_column'] = df['database'].astype(str) +'.'+ df['table_name'].astype(str) # Esse campo não pode ser formatado com f-string, comportamento muda. Concatenação de valores foi utilizado, não formatação.
 
-    if kwargs["db_name"] in df['database'].values and kwargs["table_name"] in df['table_name'].values:
-        if kwargs["db_name"] + '.' + kwargs["table_name"] in df['joined_column'].values:
-            return insert()
-        else:
-            error_message = '[ERROR] Combinação entre banco de dados e tabela não existe.'
+    # if kwargs["db_name"] in df['database'].values and kwargs["table_name"] in df['table_name'].values:
+    #     if kwargs["db_name"] + '.' + kwargs["table_name"] in df['joined_column'].values:
+    #         return insert()
+    #     else:
+    #         error_message = '[ERROR] Combinação entre banco de dados e tabela não existe.'
     
-    elif kwargs["db_name"] not in df['database'].values:
-        error_message = '[ERROR] O banco de dados não existe.'
+    # elif kwargs["db_name"] not in df['database'].values:
+    #     error_message = '[ERROR] O banco de dados não existe.'
         
-    elif kwargs["table_name"] not in df['table_name'].values:
-        error_message = '[ERROR] Tabela não existe.'
+    # elif kwargs["table_name"] not in df['table_name'].values:
+    #     error_message = '[ERROR] Tabela não existe.'
 
-    if error_message:
-        return render_template('form_post.html', user=kwargs['user'], audience_form=kwargs['audience_form'], salesforce_form=kwargs['salesforce_form'], error_message=error_message)
+    # if error_message:
+    #     return render_template('form_post.html', user=kwargs['user'], audience_form=kwargs['audience_form'], salesforce_form=kwargs['salesforce_form'], error_message=error_message)
             
 
 def execute(func, **kwargs):    
