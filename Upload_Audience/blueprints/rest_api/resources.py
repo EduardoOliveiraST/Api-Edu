@@ -20,32 +20,53 @@ class AudienceResource(Resource):
     @auth.login_required
     def get(self):
         audiences = list_existing_audiences()
+        audiences_sf = list_existing_audiences_salesforce()
         json = {
             "Created_Audiences": [
                 {
-                    "audience_id": item[0],
-                    "db_name": item[3],
-                    "table_name": item[4],
-                    "audience_name": item[5],
-                    "platform": item[6]
-                } for item in audiences
+                    "audience_id": audience[0],
+                    "db_name": audience[2],
+                    "table_name": audience[3],
+                    "audience_name": audience[4],
+                    "platform": audience[5],
+                    "advertiser_name": audience[6]
+                } for audience in audiences
             ]
         }
 
-        return jsonify(json)
+        json_sf = {
+            "Created_Audiences": [
+                {
+                  "audience_id": audience[0],
+                  "db_name_sf": audience[2],
+                  "table_name_sf": audience[3],
+                  "file_name": audience[4],
+                  "platform": audience[5],
+                  "sftp_path": audience[6].replace('\\', '\\\\')
+                  } for audience in audiences_sf
+            ]
+        }
+        # Combine the audience lists
+        combined_audiences = json["Created_Audiences"] + json_sf["Created_Audiences"]
+
+        # Create the final JSON structure
+        final_json = {"Created_Audiences": combined_audiences}
+
+        return jsonify(final_json)
 
 class AudienceItemResource(Resource):
     @auth.login_required
     def get(self, audience_id):
         try:
-            audiences = list_item_existing_audiences(id_audience=audience_id)
+            audience = list_item_existing_audiences(id_audience=audience_id)
             json = {
                 
-                    "audience_id": audiences[0][0],
-                    "db_name": audiences[0][3],
-                    "table_name": audiences[0][4],
-                    "audience_name": audiences[0][5],
-                    "platform": audiences[0][6]
+                    "audience_id": audience[0][0],
+                    "db_name": audience[0][3],
+                    "table_name": audience[0][4],
+                    "audience_name": audience[0][5],
+                    "platform": audience[0][6],
+                    "advertiser_name": audience[0][7]
             }
 
             return jsonify(json)

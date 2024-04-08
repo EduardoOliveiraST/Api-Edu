@@ -1,19 +1,14 @@
 from ext import config
 from ext.database_ext.create_tables import *
 from ext.database_ext.list_audiences import *
-from ext.formularios import LoginForm, AudiencesForm, CadastroUserForm
+from ext.formularios import LoginForm, AudiencesForm, CadastroUserForm, SalesforceForm
 from ext.autentication import valid_user_login
 from ext import database_operations
 from flask import Flask, render_template, redirect, url_for, request, session
 from blueprints import rest_api
 from flask_wtf.csrf import CSRFProtect, generate_csrf
-
-def validate_session():
-    if 'session_id' in session:
-        user_in_session = database_operations.execute('verify_session', user_id=session['user_id'], session_id=session['session_id'])
-        if user_in_session:
-            return True
-        return False
+from datetime import timedelta
+import os
 
 #--------------------------------- Destinado para cenários de teste -----------------------------------------#
 def minimal_app():
@@ -29,6 +24,11 @@ def create_app():
 
 app = create_app()
 csrf = CSRFProtect(app)
+
+app.secret_key = config.generate_secret_key()
+app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(minutes=30)
+app.config['SESSION_COOKIE_SECURE'] = True
+app.config['SESSION_COOKIE_HTTPONLY'] = True
 
 @app.route('/', methods=['GET'])
 def index():
@@ -47,71 +47,75 @@ def valid_user():
     else:
         return redirect(url_for('login'))
 
-@app.route('/formulario', methods=['GET'] )
-def form_post():
-    in_session = validate_session()
-    if in_session: 
+@app.route('/formulario/<user>', methods=['GET', 'POST'])
+def form_post(user):
+    if session.get(f'user_{user}_name'):
         audience_form = AudiencesForm()
-        return render_template('form_post.html', audience_form=audience_form)
-    return redirect(url_for('login'))
-    
-@app.route('/send_data', methods=['POST'])
-def send_data():
-    in_session = validate_session()
-    if in_session: 
-        audience_form = AudiencesForm(request.form)
-        if audience_form.validate_on_submit():
-            return database_operations.execute('insert_audience', audience_form=audience_form, id_user_insert=session['user_id'], id_user_session=session['session_id'], db_name=request.form['db_name'], table_name=request.form['table_name'], audience_name=request.form['audience_name'], fornec=request.form['selector'])
-        
+        salesforce_form = SalesforceForm()
+        return render_template('form_post.html', user=user, audience_form=audience_form, salesforce_form=salesforce_form)
+    else:
         return redirect(url_for('login'))
-
-    return redirect(url_for('login'))
     
-@app.route('/signup', methods=['GET'])
-def signup():
-    in_session = validate_session()
-    if in_session: 
+@app.route('/send_data/<user>', methods=['POST'])
+def send_data(user):
+    if session.get(f'user_{user}_name'): 
+        audience_form = AudiencesForm(request.form)
+        salesforce_form = SalesforceForm(request.form)
+        partner = request.form.get('parceiro')
+
+        if partner == 'Tiktok':
+            if audience_form.validate_on_submit():
+                return database_operations.execute('insert_audience', user=user, audience_form=audience_form, salesforce_form=salesforce_form, id_user_insert=session[f'{user}_user_id'], db_name=request.form['db_name'], table_name=request.form['table_name'], audience_name=request.form['audience_name'], parceiro=request.form['parceiro'], advertiser_name=request.form['advertiser_name'])
+            
+        elif partner == 'Salesforce':
+            if salesforce_form.validate_on_submit():
+                return database_operations.execute('insert_audience', user=user, audience_form=audience_form, salesforce_form=salesforce_form, id_user_insert=session[f'{user}_user_id'], db_name=request.form['db_name_sf'], table_name=request.form['table_name_sf'], file_name=request.form['file_name'], sftp_path=request.form['sftp_path'], parceiro=request.form['parceiro'])
+        
+        return redirect(url_for('form_post'))
+
+    return redirect(url_for('logout'))
+    
+@app.route('/signup/<user>', methods=['GET'])
+def signup(user):
+    if session.get(f'user_{user}_name'): 
         form = CadastroUserForm()
-        return render_template('create_users.html', form=form)
+        return render_template('create_users.html', user=user, form=form)
     return redirect(url_for('login'))
 
-@app.route('/create_user', methods=['POST'])
-def create_user():
-    in_session = validate_session()
-    if in_session: 
+@app.route('/create_user/<user>', methods=['POST'])
+def create_user(user):
+    if session.get(f'user_{user}_name'): 
         form = CadastroUserForm(request.form)
         if form.validate_on_submit():
-            return database_operations.execute('insert_user', username=request.form['user'], password=request.form['password'])
+            return database_operations.execute('insert_user', user=user, username=request.form['user'], password=request.form['password'])
         else:
             error_message = 'As senhas não coincidem. Por favor, verifique.'
-            return render_template('create_users.html', form=form, error_message=error_message)
+            return render_template('create_users.html', user=user, form=form, error_message=error_message)
         
     return redirect(url_for('login'))
 
-@app.route('/list_audiences', methods=['GET'])
-def list_audiences():
-    in_session = validate_session()
-    if in_session: 
+@app.route('/list_audiences/<user>', methods=['GET', 'POST'])
+def list_audiences(user):
+    if session.get(f'user_{user}_name'): 
         audiences = list_existing_audiences()
+        audiences_sf = list_existing_audiences_salesforce()
         csrf_token = generate_csrf()
-        return render_template('list_audiences.html',audiences=audiences, csrf_token=csrf_token)
+        return render_template('list_audiences.html', user=user, audiences=audiences, audiences_sf=audiences_sf, csrf_token=csrf_token)
     return redirect(url_for('login'))
 
-@app.route('/delete_audience/<int:audience_id>', methods=['DELETE'])
-def delete_audience(audience_id):
-    in_session = validate_session()
-    if in_session: 
-        return database_operations.execute('delete_audience', audience_id=audience_id)
+@app.route('/delete_audience/<user>/<int:audience_id>/<parceiro>', methods=['DELETE', 'POST'])
+def delete_audience(user, audience_id, parceiro):
+    if session.get(f'user_{user}_name'): 
+        return database_operations.execute('delete_audience', audience_id=audience_id, parceiro=parceiro)
     else:
         return redirect(url_for('login'))
 
-@app.route('/logout', methods=['GET'])
-def logout():
-    in_session = validate_session()
-    if in_session: 
-        database_operations.execute('remove_session', session=session)
+@app.route('/logout/<user>', methods=['GET'])
+def logout(user):
+    if session.get(f'user_{user}_name'): 
         session.clear()
     return redirect(url_for('login'))
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host="0.0.0.0", port=port, debug=True)

@@ -57,7 +57,7 @@
         }
 
         .card-content {
-            padding: 20px;
+            padding: 30px;
             flex-direction: row;
             display: flex;
             justify-content: space-between; /* Adicionado para posicionar o botão à direita */
@@ -111,13 +111,13 @@
 <body>
     <header>
         <nav>
-            <a href="#" onclick="form_post()">Início</a>
+            <a href="#" onclick="goBack()">Início</a>
             <a href="#" onclick="signup()">Cadastro de usuário</a>
         </nav>
     </header>
 
+    <input type="hidden" name="csrf_token" id="csrf_token" value="{{ csrf_token }}">
     {% for audience in audiences %}
-    <form><input type="hidden" name="csrf_token" id="csrf_token" value="{{ csrf_token }}"></form>
     <div class="card">
         <div class="card-content">
             <div>
@@ -125,10 +125,32 @@
                 <div class="card-text">
                     <strong>Nome do Banco:</strong> {{ audience.db_name }}<br>
                     <strong>Nome da Tabela:</strong> {{ audience.table_name }}<br>
-                    <strong>Fornecedor:</strong> {{ audience.fornec }}
+                    <strong>Parceiro:</strong> {{ audience.parceiro }}<br>
+                    <strong>Adv_Name:</strong> {{ audience.advertiser_name }}
                 </div>
             </div>
-            <button class="delete-button" onclick="deleteAudience('{{ audience.id }}')">Apagar</button>
+            <button class="delete-button" onclick="deleteAudience('{{ user }}', '{{ audience.id }}', '{{ audience.parceiro }}')">Apagar</button>
+        </div>
+        <div class="card-footer">
+            <!-- Adicione qualquer conteúdo adicional no rodapé do cartão aqui -->
+        </div>
+    </div>
+    {% endfor %}
+
+    {% for audience in audiences_sf %}
+    <div class="card">
+        <div class="card-content">
+            <div>
+                <div class="card-heading">{{ audience.file_name }}</div>
+                <div class="card-text">
+                    <strong>Nome do Banco:</strong> {{ audience.db_name_sf }}<br>
+                    <strong>Nome da Tabela:</strong> {{ audience.table_name_sf }}<br>
+                    <strong>Parceiro:</strong> {{ audience.parceiro }}<br>
+                    <strong>Nome do arquivo:</strong> {{ audience.file_name }} (.csv)<br>
+                    <strong>PathSftp:</strong> {{ audience.sftp_path }}
+                </div>
+            </div>
+            <button class="delete-button" onclick="deleteAudience('{{ user }}','{{ audience.id }}', '{{ audience.parceiro }}')">Apagar</button>
         </div>
         <div class="card-footer">
             <!-- Adicione qualquer conteúdo adicional no rodapé do cartão aqui -->
@@ -145,19 +167,21 @@
             window.location.href = "/formulario";
         }
         function signup() {
-            window.location.href = "/signup";
+            var url = "{{ url_for('signup', user=user) }}";
+            window.location.href = url;
         }
         function goBack() {
-            window.location.href = "/formulario";
+            var url = "{{ url_for('form_post', user=user) }}";
+            window.location.href = url;
         }
 
-        function deleteAudience(audienceId) {
+        function deleteAudience(user, audienceId, parceiro) {
             // Confirmar a exclusão com o usuário
             var confirmDelete = confirm("Tem certeza que deseja excluir esta audiência?");
             if (confirmDelete) {
                 // Realize a exclusão fazendo uma requisição DELETE ao servidor
                 var csrfToken = document.getElementById('csrf_token').value;
-                fetch(`/delete_audience/${audienceId}`, {
+                fetch(`/delete_audience/${user}/${audienceId}/${parceiro}`, {
                     method: 'DELETE',
                     headers: {
                         'Content-Type': 'application/json',

@@ -114,7 +114,7 @@
     <header>
         <h1>Cadastro de Usuários</h1>
     </header>
-    <form action="/create_user" method="post">
+    <form action="{{ url_for('create_user', user=user) }}" method="post">
         {{ form.hidden_tag() }}
         <label for="user">Usuário:</label>
         {{ form.user() }}
@@ -144,7 +144,8 @@
 
     <script>
         function goBack() {
-            window.location.href = "/formulario";
+            var url = "{{ url_for('form_post', user=user) }}";
+            window.location.href = url;
         }
     </script>
 
