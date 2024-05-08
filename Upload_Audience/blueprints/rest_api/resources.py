@@ -6,12 +6,11 @@ from ext import database_operations
 
 auth = HTTPBasicAuth()
 
-USER_DATA = {
-    "admin": "qwe123@A"
-}
 
 @auth.verify_password
 def verify(username, password):
+    USER_DATA = {"admin": "qwe123@A"}
+
     if not (username and password):
         return False
     return USER_DATA.get(username) == password
@@ -42,7 +41,7 @@ class AudienceResource(Resource):
                   "table_name_sf": audience[3],
                   "file_name": audience[4],
                   "platform": audience[5],
-                  "sftp_path": audience[6].replace('\\', '\\\\')
+                  "sftp_path": audience[6]
                   } for audience in audiences_sf
             ]
         }

@@ -3,12 +3,18 @@ from flask import render_template,jsonify
 from werkzeug.security import generate_password_hash
 from ext.config import TABLE_AUDIENCES, TABLE_USERS, TABLE_SALES_FORCE, DATABASE
 from ext.database_ext.create_tables import *
-import os
-import pandas as pd
+import re
 
 create_table_login(DATABASE)
 create_table_audiences(DATABASE)
 create_table_salesforce(DATABASE)
+
+def validar_nome_arquivo_salesforce(nome_arquivo):
+        # Verifica se o nome do arquivo já possui uma extensão diferente de '.csv'
+        if '.' in nome_arquivo and not nome_arquivo.endswith('.csv'):
+            nome_arquivo = nome_arquivo.rsplit('.', 1)[0]
+
+        return nome_arquivo + '.csv'
 
 
 def table_and_database_exists(cursor_principal, **kwargs):
@@ -23,6 +29,8 @@ def table_and_database_exists(cursor_principal, **kwargs):
 
 
             elif kwargs['parceiro'] == 'Salesforce':
+                kwargs['sftp_path'] = re.sub(r'[\\/]+', '/', kwargs['sftp_path'])
+
                 cursor_principal.execute("BEGIN")
                 query = f'INSERT INTO {TABLE_SALES_FORCE} (id_user_insert, db_name, table_name, file_name, parceiro, sftp_path) VALUES (?, ?, ?, ?, ?, ?)'
                 cursor_principal.execute(query,(kwargs['id_user_insert'], kwargs['db_name'], kwargs['table_name'], kwargs['file_name'], kwargs['parceiro'], kwargs['sftp_path'],))
@@ -114,6 +122,8 @@ def execute(func, **kwargs):
         
         
         elif kwargs['parceiro'] == 'Salesforce':
+            kwargs["file_name"] = validar_nome_arquivo_salesforce(kwargs["file_name"])
+
             query = f'SELECT * FROM {TABLE_SALES_FORCE} WHERE file_name = ?  AND parceiro = ?'
             cursor.execute(query, (kwargs['file_name'], kwargs['parceiro'],))
 

@@ -75,10 +75,10 @@
 
         <div id="tiktok-fields" style="display: none;">
             <label for="db_name">Nome do Banco de Dados</label> 
-            {{ audience_form.db_name(placeholder="Ex [db_meudb]") | escape }}
+            {{ audience_form.db_name() | escape }}
         
             <label for="table_name">Nome da Tabela:</label>
-            {{ audience_form.table_name(placeholder="Ex [tb_minhatb]") | escape }}
+            {{ audience_form.table_name() | escape }}
         
             <label for="audience_name">Nome da Audiência:</label>
             {{ audience_form.audience_name() }}
@@ -93,10 +93,10 @@
         <div id="salesforce-fields" style="display: none;">
 
             <label for="db_name_sf">Nome do Banco de Dados</label> 
-            {{ salesforce_form.db_name_sf(placeholder="Ex [db_meudb]") | escape }}
+            {{ salesforce_form.db_name_sf() | escape }}
         
             <label for="table_name_sf">Nome da Tabela:</label>
-            {{ salesforce_form.table_name_sf(placeholder="Ex [tb_minhatb]") | escape }}
+            {{ salesforce_form.table_name_sf() | escape }}
 
             <label for="file_name">Nome do arquivo (CSV):</label>
             {{ salesforce_form.file_name() }}
