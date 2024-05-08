@@ -119,7 +119,7 @@ def execute(func, **kwargs):
 
             exists = bool(cursor.fetchone())
             if exists:
-                return render_template('form_post.html', user=kwargs['user'], audience_form=kwargs['audience_form'], salesforce_form=kwargs['salesforce_form'], error_message=f'[ERROR] Audiência {kwargs["audience_name"]} já é existente.')
+                return render_template('form_post.html', user=kwargs['user'], audience_form=kwargs['audience_form'], salesforce_form=kwargs['salesforce_form'], error_message=f'[ERROR] Arquivo {kwargs["file_name"]} já é existente.')
         
         return table_and_database_exists(cursor, **kwargs)
 

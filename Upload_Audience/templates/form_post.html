@@ -161,6 +161,7 @@
             if (errorMessage) {
                 // Exibe a mensagem de erro usando um alerta
                 alert(errorMessage);
+                window.location.href = "{{ url_for('form_post', user=user) }}";
             }
         });
 
@@ -169,6 +170,7 @@
             if (audienceCreated) {
                 // Exibe a mensagem de erro usando um alerta
                 alert(audienceCreated);
+                window.location.href = "{{ url_for('form_post', user=user) }}";
             }
         });
         document.addEventListener("DOMContentLoaded", function() {
