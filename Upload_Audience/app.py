@@ -39,6 +39,7 @@ def login():
     form = LoginForm()
     return render_template('login.html', form=form)
 
+# ROTA DE PROCESSAMENTO DE INFORMAÇÕES DO LOGIN 
 @app.route('/valid_user', methods=['POST'])
 def valid_user():
     form = LoginForm(request.form)
@@ -47,7 +48,7 @@ def valid_user():
     else:
         return redirect(url_for('login'))
 
-@app.route('/formulario/<user>', methods=['GET', 'POST'])
+@app.route('/formulario/<user>', methods=['GET'])
 def form_post(user):
     if session.get(f'user_{user}_name'):
         audience_form = AudiencesForm()
@@ -56,6 +57,7 @@ def form_post(user):
     else:
         return redirect(url_for('login'))
     
+# ROTA DE PROCESSAMENTO DE INFORMAÇÕES DO FORMULÁRIO
 @app.route('/send_data/<user>', methods=['POST'])
 def send_data(user):
     if session.get(f'user_{user}_name'): 
@@ -82,6 +84,7 @@ def signup(user):
         return render_template('create_users.html', user=user, form=form)
     return redirect(url_for('login'))
 
+# ROTA DE PROCESSAMENTO DE INFORMAÇÕES DA CRIAÇÃO DE USUÁRIO
 @app.route('/create_user/<user>', methods=['POST'])
 def create_user(user):
     if session.get(f'user_{user}_name'): 
@@ -94,7 +97,7 @@ def create_user(user):
         
     return redirect(url_for('login'))
 
-@app.route('/list_audiences/<user>', methods=['GET', 'POST'])
+@app.route('/list_audiences/<user>', methods=['GET'])
 def list_audiences(user):
     if session.get(f'user_{user}_name'): 
         audiences = list_existing_audiences()
@@ -103,7 +106,8 @@ def list_audiences(user):
         return render_template('list_audiences.html', user=user, audiences=audiences, audiences_sf=audiences_sf, csrf_token=csrf_token)
     return redirect(url_for('login'))
 
-@app.route('/delete_audience/<user>/<int:audience_id>/<parceiro>', methods=['DELETE', 'POST'])
+# ROTA DE PROCESSAMENTO DE INFORMAÇÕES DA EXCLUSÃO DE AUDIÊNCIAS
+@app.route('/delete_audience/<user>/<int:audience_id>/<parceiro>', methods=['DELETE'])
 def delete_audience(user, audience_id, parceiro):
     if session.get(f'user_{user}_name'): 
         return database_operations.execute('delete_audience', audience_id=audience_id, parceiro=parceiro)
