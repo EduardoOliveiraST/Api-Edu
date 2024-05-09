@@ -40,7 +40,7 @@ def login():
     return render_template('login.html', form=form)
 
 # ROTA DE PROCESSAMENTO DE INFORMAÇÕES DO LOGIN 
-@app.route('/valid_user', methods=['POST'])
+@app.route('/auth', methods=['POST'])
 def valid_user():
     form = LoginForm(request.form)
     if form.validate_on_submit():
@@ -48,7 +48,7 @@ def valid_user():
     else:
         return redirect(url_for('login'))
 
-@app.route('/formulario/<user>', methods=['GET'])
+@app.route('/form/<user>', methods=['GET'])
 def form_post(user):
     if session.get(f'user_{user}_name'):
         audience_form = AudiencesForm()
@@ -75,7 +75,7 @@ def send_data(user):
         
         return redirect(url_for('form_post'))
 
-    return redirect(url_for('logout'))
+    return redirect(url_for('login'))
     
 @app.route('/signup/<user>', methods=['GET'])
 def signup(user):

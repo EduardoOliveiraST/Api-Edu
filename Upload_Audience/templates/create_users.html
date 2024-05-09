@@ -144,8 +144,7 @@
 
     <script>
         function goBack() {
-            var url = "{{ url_for('form_post', user=user) }}";
-            window.location.href = url;
+            window.location.href = "{{ url_for('form_post', user=user) }}";
         }
     </script>
 

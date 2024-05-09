@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Serasa API</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/login.css') }}">
+</head>
+
+<style>
+    
+    .logout-button {
+        background-color: #d9534f;
+        color: white;
+        padding: 10px 15px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+        font-size: 16px;
+        margin-left: 15px;
+        display: flex;
+        margin-top: -40px;
+        margin-left: 94%;
+
+    }
+    .logout-button:hover {
+        background-color: #c9302c;
+    }
+
+    input[type=submit] {
+        font-weight: bold;
+        display: flex;
+        justify-content: center;
+        width: 200px;
+        padding:7px 80px; 
+            background:#67ff97; 
+            border:0 none;
+            cursor:pointer;
+            -webkit-border-radius: 5px;
+            border-radius: 25px;
+            margin-top: 30px;
+            margin-left: 100px;
+    }
+
+</style>
+
+{% block conteudo %} 
+
+{% endblock %}

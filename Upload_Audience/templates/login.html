@@ -1,11 +1,5 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Serasa API</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='styles/login.css') }}">
-</head>
+{% extends 'template.html' %}
+{% block conteudo %}
 <body>
     <header>
         <nav>
@@ -19,7 +13,7 @@
         </nav>
     </header>
     
-    <form action="/valid_user" method="post">
+    <form action="{{ url_for('valid_user') }}" method="post">
         {{ form.hidden_tag() }}
         {{ form.user.label }} {{ form.user() }}
         {{ form.password.label }} {{ form.password() }}
@@ -55,4 +49,4 @@
         });
     </script>
 </body>
-</html>
+{% endblock %}

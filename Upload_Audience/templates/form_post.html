@@ -1,61 +1,22 @@
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>API - ECS</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='styles/login.css') }}">
-    <style>
-        .logout-button {
-            background-color: #d9534f;
-            color: white;
-            padding: 10px 15px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-            font-size: 16px;
-            margin-left: 15px;
-            display: flex;
-            margin-top: -40px;
-            margin-left: 94%;
-        }
-
-        .logout-button:hover {
-            background-color: #c9302c;
-        }
-
-        input[type=submit] {
-            font-weight: bold;
-            display: flex;
-            justify-content: center;
-            width: 200px;
-            padding:7px 80px; 
-            background:#67ff97; 
-            border:0 none;
-            cursor:pointer;
-            -webkit-border-radius: 5px;
-            border-radius: 25px;
-            margin-top: 30px;
-            margin-left: 100px;
-        }
-
-        nav ul {
-            display: flex;
-            justify-content: left;
-            list-style: none;
-            padding: 0;
-            margin: 0;
-            margin-left: 10px;
-            margin-bottom: 10px;
+{% extends 'template.html' %}
+{% block conteudo %}
+<style>
+    nav ul {
+        display: flex;
+        justify-content: left;
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        margin-left: 10px;
+        margin-bottom: 10px;
     }
-        
-        nav li {
-            display: inline-block;
-            margin-right: 15px;
-            margin-top: 4px;
-        }
-    </style>
-</head>
+    
+    nav li {
+        display: inline-block;
+        margin-right: 15px;
+        margin-top: 4px;
+    }
+</style>
 <body>
     <header>
         <nav>
@@ -110,18 +71,15 @@
     </form>
     <script>
         function list_audiences() {
-            var url = "{{ url_for('list_audiences', user=user) }}";
-            window.location.href = url;
+            window.location.href = "{{ url_for('list_audiences', user=user) }}";
         }
         
         function signup() {
-            var url = "{{ url_for('signup', user=user) }}";
-            window.location.href = url;
+            window.location.href = "{{ url_for('signup', user=user) }}";
         }
 
         function logout() {
-            var url = "{{ url_for('logout', user=user) }}";
-            window.location.href = url;
+            window.location.href = "{{ url_for('logout', user=user) }}";
         }
 
         function validateForm() {
@@ -256,6 +214,6 @@
             }
 }
 
-    </script>
+</script>
 </body>
-</html>
+{% endblock %}

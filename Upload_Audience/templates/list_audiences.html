@@ -164,15 +164,13 @@
 
     <script>
         function form_post() {
-            window.location.href = "/formulario";
+            window.location.href = "{{ url_for('form_post', user=user) }}";
         }
         function signup() {
-            var url = "{{ url_for('signup', user=user) }}";
-            window.location.href = url;
+            window.location.href = "{{ url_for('signup', user=user) }}";
         }
         function goBack() {
-            var url = "{{ url_for('form_post', user=user) }}";
-            window.location.href = url;
+            window.location.href = "{{ url_for('form_post', user=user) }}";
         }
 
         function deleteAudience(user, audienceId, parceiro) {

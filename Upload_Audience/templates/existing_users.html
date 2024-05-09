@@ -80,8 +80,7 @@
 
     <script>
         function goBack() {
-            var url = "{{ url_for('signup', user=user) }}";
-            window.location.href = url;
+            window.location.href = "{{ url_for('signup', user=user) }}";
         }
     </script>
 </body>
