@@ -14,14 +14,10 @@ def read_settings(file_path='settings.toml', environment='default'):
 
     return sqlalchemy_database_uri
 
-def generate_secret_key(length=24):
-    """Gera uma chave secreta aleatória."""
-    return os.urandom(length).hex()
-
 def init_app(app):
     FlaskDynaconf(app)
 
-
+SECRET_KEY = os.urandom(24).hex()
 DATABASE = read_settings(environment='default')
 TABLE_AUDIENCES = 'tb_upload_audiences_ecs_marketing'
 TABLE_USERS = 'tb_login'
