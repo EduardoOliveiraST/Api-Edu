@@ -13,4 +13,3 @@ api.add_resource(DeleteAudienceWithNoSuchTable, '/delete/<audience_id>')
 
 def init_app(app):
     app.register_blueprint(bp)
-

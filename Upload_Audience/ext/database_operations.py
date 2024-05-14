@@ -10,18 +10,21 @@ create_table_audiences(DATABASE)
 create_table_salesforce(DATABASE)
 
 def validar_nome_arquivo_salesforce(nome_arquivo):
-        # Verifica se o nome do arquivo já possui uma extensão diferente de '.csv'
-        if '.' in nome_arquivo and not nome_arquivo.endswith('.csv'):
-            nome_arquivo = nome_arquivo.rsplit('.', 1)[0]
+    # Verifica se o nome do arquivo já possui uma extensão diferente de '.csv'
+    if '.' in nome_arquivo:
+        nome, extensao = nome_arquivo.rsplit('.', 1)
+        if extensao != 'csv':
+            nome_arquivo = nome + '.csv'
+    else:
+        nome_arquivo += '.csv'
 
-        return nome_arquivo + '.csv'
-
+    return nome_arquivo
 
 def table_and_database_exists(cursor_principal, **kwargs):
 
     def insert():
         try:
-            if kwargs['parceiro'] == 'Tiktok':
+            if kwargs['parceiro'] == 'Tiktok': # Aqui já validamos que a audiência solicitada não existe no banco de dados, ainda é necessário validar se o banco de dados e tabela existem antes de criar a audiência [PENDING]
                 cursor_principal.execute("BEGIN")
                 query = f'INSERT INTO {TABLE_AUDIENCES} (id_user_insert, db_name, table_name, audience_name, parceiro, advertiser_name) VALUES (?, ?, ?, ?, ?, ?)'
                 cursor_principal.execute(query,(kwargs['id_user_insert'], kwargs['db_name'], kwargs['table_name'], kwargs['audience_name'], kwargs['parceiro'], kwargs['advertiser_name'],))
@@ -29,8 +32,9 @@ def table_and_database_exists(cursor_principal, **kwargs):
 
 
             elif kwargs['parceiro'] == 'Salesforce':
-                kwargs['sftp_path'] = re.sub(r'[\\/]+', '/', kwargs['sftp_path'])
-
+                kwargs["file_name"] = validar_nome_arquivo_salesforce(kwargs["file_name"]) # Trata o filename, independente da extensão os arquivos tem que ser .csv, se tiver outra extensão substitui para filename.csv e se não tiver nada coloca o .csv no final.
+                kwargs['sftp_path'] = re.sub(r'[\\/]+', '/', kwargs['sftp_path']) # O path SFTP deve conter '/' em seu campo, se não tiver o HTML força o usuário a inserir, aqui substitui qualquer '\' OU '/' por uma única '/'.
+                
                 cursor_principal.execute("BEGIN")
                 query = f'INSERT INTO {TABLE_SALES_FORCE} (id_user_insert, db_name, table_name, file_name, parceiro, sftp_path) VALUES (?, ?, ?, ?, ?, ?)'
                 cursor_principal.execute(query,(kwargs['id_user_insert'], kwargs['db_name'], kwargs['table_name'], kwargs['file_name'], kwargs['parceiro'], kwargs['sftp_path'],))
@@ -122,14 +126,31 @@ def execute(func, **kwargs):
         
         
         elif kwargs['parceiro'] == 'Salesforce':
-            kwargs["file_name"] = validar_nome_arquivo_salesforce(kwargs["file_name"])
-
             query = f'SELECT * FROM {TABLE_SALES_FORCE} WHERE file_name = ?  AND parceiro = ?'
             cursor.execute(query, (kwargs['file_name'], kwargs['parceiro'],))
 
             exists = bool(cursor.fetchone())
             if exists:
                 return render_template('form_post.html', user=kwargs['user'], audience_form=kwargs['audience_form'], salesforce_form=kwargs['salesforce_form'], error_message=f'[ERROR] Arquivo {kwargs["file_name"]} já é existente.')
+        
+        return table_and_database_exists(cursor, **kwargs)
+    
+    def update_audience(**kwargs):
+        if kwargs['parceiro'] == 'Tiktok':
+            sql = f"UPDATE {TABLE_AUDIENCES} SET db_name = ?, table_name = ?, audience_name = ?, advertiser_name = ? WHERE id = ?"
+            cursor.execute(sql, (kwargs['db_name'], kwargs['table_name'], kwargs['audience_name'], kwargs['advertiser_name'], kwargs['id']))
+            success_message = f'Audiência atualizada com êxito.'
+            return render_template('form_post.html', audience_form=kwargs['audience_form'], salesforce_form=kwargs['salesforce_form'], user=kwargs['user'], success_message=success_message)
+        
+        
+        elif kwargs['parceiro'] == 'Salesforce':
+            kwargs["file_name"] = validar_nome_arquivo_salesforce(kwargs["file_name"])
+            kwargs['sftp_path'] = re.sub(r'[\\/]+', '/', kwargs['sftp_path'])
+
+            sql = f"UPDATE {TABLE_SALES_FORCE} SET db_name = ?, table_name = ?, sftp_path = ? WHERE id = ?"
+            cursor.execute(sql, (kwargs['db_name'], kwargs['table_name'], kwargs['sftp_path'], kwargs['id']))
+            success_message = f'Audiência atualizada com êxito.'
+            return render_template('form_post.html', user=kwargs['user'], audience_form=kwargs['audience_form'], salesforce_form=kwargs['salesforce_form'], success_message=success_message)
         
         return table_and_database_exists(cursor, **kwargs)
 

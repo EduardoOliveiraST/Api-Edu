@@ -7,65 +7,77 @@
         list-style: none;
         padding: 0;
         margin: 0;
-        margin-left: 10px;
+        margin-left: 220px;
         margin-bottom: 10px;
     }
     
     nav li {
         display: inline-block;
         margin-right: 15px;
-        margin-top: 4px;
+        margin-top: -2px;
+    }
+
+    h4 {
+        display: flex;
+        justify-content: left;
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        margin-left: 0px;
+        margin-bottom: 10px;
     }
 </style>
-<body>
+<body onload="updateForm()">
     <header>
         <nav>
+            <h4 class="header">Atualizar audiencia</h4>
             <ul>
                 <li><a href="#" onclick="list_audiences('{{ user }}')">Listas de audiência</a></li>
-                <li><a href="#" onclick="signup()">Cadastro de usuário</a></li>
             </ul>
         </nav>
         <button class="logout-button" onclick="logout()">Logout</button>
     </header>
     
-    <form action="{{ url_for('send_data', user=user) }}" method="post" onsubmit="return validateForm()">
+    <form action="{{ url_for('update_data', user=user, id=audience.id) }}" method="post" onsubmit="return validateForm()">
         {{ audience_form.hidden_tag() | escape }}
 
-        <label for="parceiro" >Parceiro:</label>
-        {{ audience_form.parceiro(id="parceiro", onchange="updateForm()") }}
+        <label for="parceiro">Parceiro:</label>
+        <select name="parceiro" id="parceiro">
+            <option value="{{ audience.parceiro }}" selected>{{ audience.parceiro }}</option>
+        </select>
 
         <div id="tiktok-fields" style="display: none;">
             <label for="db_name">Nome do Banco de Dados</label> 
-            {{ audience_form.db_name() | escape }}
+            {{ audience_form.db_name(value=audience[2]) | escape }}
         
             <label for="table_name">Nome da Tabela:</label>
-            {{ audience_form.table_name() | escape }}
+            {{ audience_form.table_name(value=audience[3]) | escape }}
         
             <label for="audience_name">Nome da Audiência:</label>
-            {{ audience_form.audience_name() }}
+                <input type="text" id="audience_name" name="audience_name" value="{{ audience[4] }}" readonly style="background-color: #f0f0f0; border: 1px solid #ccc;">
 
             <label for="advertiser_name">Nome do Advertiser:</label>
             {{ audience_form.advertiser_name(id="advertiser_name") }}
 
-            {{ audience_form.submit() | escape }}
+            {{ audience_form.submit(value='Atualizar informações') | escape }}
 
         </div>
 
         <div id="salesforce-fields" style="display: none;">
 
             <label for="db_name_sf">Nome do Banco de Dados</label> 
-            {{ salesforce_form.db_name_sf() | escape }}
+            {{ salesforce_form.db_name_sf(value=audience[2]) | escape }}
         
             <label for="table_name_sf">Nome da Tabela:</label>
-            {{ salesforce_form.table_name_sf() | escape }}
+            {{ salesforce_form.table_name_sf(value=audience[3]) | escape }}
 
-            <label for="file_name">Nome do arquivo (CSV):</label>
-            {{ salesforce_form.file_name() }}
+            <label for="audience_name">Nome do arquivo (CSV):</label>
+                <input type="text" id="file_name" name="file_name" value="{{ audience[4] }}" readonly style="background-color: #f0f0f0; border: 1px solid #ccc;">
             
             <label for="sftp_path">Path (SFTP):</label>
-            {{ salesforce_form.sftp_path() }}
+            {{ salesforce_form.sftp_path(value=audience[6]) }}
 
-            {{ salesforce_form.submit() }}
+            {{ salesforce_form.submit(value='Atualizar informações') }}
         </div>
     
     </form>
@@ -89,17 +101,21 @@
             var parceiro = document.getElementById("parceiro").value;
             var pathSftpValue = document.getElementById("sftp_path").value;
 
-            if (!dbName) {
+
+            if (dbName && parceiro === "Salesforce") {
                 // Retrieve dbName from a different source
                 var dbName = document.getElementById("db_name_sf").value;
             }
+
+            console.log("dbName:", dbName);
+            console.log("parceiro:", parceiro);
 
             if (!tableName) {
               // Retrieve tableName from a different source
               var tableName = document.getElementById("table_name_sf").value;
             }
 
-            if (audienceName) {
+            if (audienceName && parceiro === "Tiktok") {
                 if (!/^[a-zA-Z0-9_]+$/.test(audienceName)) {
                 alert("Erro: O nome da audiência deve ser alfanumérico, podendo conter underscore (_).");
                 return false;
@@ -112,6 +128,7 @@
                 return false;
             }
 
+            
             if (pathSftpValue && parceiro === "Salesforce") {
                 if (!pathSftpValue.includes('/') && !pathSftpValue.includes('\\')) {
                 alert("Erro: O path deve conter '/'.");

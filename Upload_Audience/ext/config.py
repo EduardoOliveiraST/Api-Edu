@@ -22,4 +22,3 @@ DATABASE = read_settings(environment='default')
 TABLE_AUDIENCES = 'tb_upload_audiences_ecs_marketing'
 TABLE_USERS = 'tb_login'
 TABLE_SALES_FORCE = 'tb_upload_salesforce'
-

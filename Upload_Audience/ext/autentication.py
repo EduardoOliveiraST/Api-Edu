@@ -16,10 +16,10 @@ def valid_user_login(**kwargs):
             consulta = f'SELECT * FROM {TABLE_USERS} WHERE user = ?'
             cursor.execute(consulta, (user,))
             existing_entry = cursor.fetchone()
-
+            # Se usuário existe
             if existing_entry:
 
-                try:
+                try: # Verifica se está logado
                     session[f'user_{user}_logged_in']
                     flash('O usuário está logado!', 'warning')
                     return render_template('login.html', form=kwargs['form'])

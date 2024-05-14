@@ -105,6 +105,14 @@
         .delete-button:hover {
             background-color: #c82333;
         }
+
+        .edit-btn {
+            margin-left: 60px;
+            background-color: transparent;
+            border: none;
+            cursor: pointer;
+        }
+
     </style>
     
 </head>
@@ -129,6 +137,9 @@
                     <strong>Adv_Name:</strong> {{ audience.advertiser_name }}
                 </div>
             </div>
+            <form action="{{ url_for('update', user=user, partner=audience.parceiro, id=audience.id) }}" method="get">
+                <button type="submit" class="edit-btn" title="Editar">✏️</button>
+            </form>
             <button class="delete-button" onclick="deleteAudience('{{ user }}', '{{ audience.id }}', '{{ audience.parceiro }}')">Apagar</button>
         </div>
         <div class="card-footer">
@@ -150,6 +161,9 @@
                     <strong>PathSftp:</strong> {{ audience.sftp_path }}
                 </div>
             </div>
+            <form action="{{ url_for('update', user=user, partner=audience.parceiro, id=audience.id) }}" method="get">
+                <button type="submit" class="edit-btn" title="Editar">✏️</button>
+            </form>
             <button class="delete-button" onclick="deleteAudience('{{ user }}','{{ audience.id }}', '{{ audience.parceiro }}')">Apagar</button>
         </div>
         <div class="card-footer">
@@ -195,7 +209,8 @@
                 })
                 .catch(error => {
                     console.error('Erro ao processar requisição:', error);
-                    alert('Erro ao excluir audiência. Consulte o console para mais detalhes.');
+                    alert('Erro ao excluir audiência.');
+                    window.location.href = "{{ url_for('form_post', user=user) }}";
                 });
             }
         }
