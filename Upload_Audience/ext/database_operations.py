@@ -32,9 +32,6 @@ def table_and_database_exists(cursor_principal, **kwargs):
 
 
             elif kwargs['parceiro'] == 'Salesforce':
-                kwargs["file_name"] = validar_nome_arquivo_salesforce(kwargs["file_name"]) # Trata o filename, independente da extensão os arquivos tem que ser .csv, se tiver outra extensão substitui para filename.csv e se não tiver nada coloca o .csv no final.
-                kwargs['sftp_path'] = re.sub(r'[\\/]+', '/', kwargs['sftp_path']) # O path SFTP deve conter '/' em seu campo, se não tiver o HTML força o usuário a inserir, aqui substitui qualquer '\' OU '/' por uma única '/'.
-                
                 cursor_principal.execute("BEGIN")
                 query = f'INSERT INTO {TABLE_SALES_FORCE} (id_user_insert, db_name, table_name, file_name, parceiro, sftp_path) VALUES (?, ?, ?, ?, ?, ?)'
                 cursor_principal.execute(query,(kwargs['id_user_insert'], kwargs['db_name'], kwargs['table_name'], kwargs['file_name'], kwargs['parceiro'], kwargs['sftp_path'],))
@@ -126,6 +123,8 @@ def execute(func, **kwargs):
         
         
         elif kwargs['parceiro'] == 'Salesforce':
+            kwargs["file_name"] = validar_nome_arquivo_salesforce(kwargs["file_name"]) # Trata o filename, independente da extensão os arquivos tem que ser .csv, se tiver outra extensão substitui para filename.csv e se não tiver nada coloca o .csv no final.
+            kwargs['sftp_path'] = re.sub(r'[\\/]+', '/', kwargs['sftp_path']) # O path SFTP deve conter '/' em seu campo, se não tiver o HTML força o usuário a inserir, aqui substitui qualquer '\' OU '/' por uma única '/'.
             query = f'SELECT * FROM {TABLE_SALES_FORCE} WHERE file_name = ?  AND parceiro = ?'
             cursor.execute(query, (kwargs['file_name'], kwargs['parceiro'],))
 
