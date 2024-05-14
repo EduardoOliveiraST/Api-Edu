@@ -121,5 +121,7 @@ def delete_audience(user, audience_id, parceiro):
 @app.route('/logout/<user>', methods=['GET'])
 @login_required
 def logout(user):
-    session.clear()
+    session[f'user_{user}_logged_in'] = False
+    session[f'user_{user}_name'] = None
+    session[f'{user}_user_id'] = None
     return redirect(url_for('login'))
