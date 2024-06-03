@@ -107,10 +107,16 @@
         }
 
         .edit-btn {
-            margin-left: 60px;
             background-color: transparent;
             border: none;
             cursor: pointer;
+        }
+
+        .center-form {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100%; /* ajuste conforme necessário */
         }
 
     </style>
@@ -137,7 +143,7 @@
                     <strong>Adv_Name:</strong> {{ audience.advertiser_name }}
                 </div>
             </div>
-            <form action="{{ url_for('update', user=user, partner=audience.parceiro, id=audience.id) }}" method="get">
+            <form action="{{ url_for('update', user=user, partner=audience.parceiro, id=audience.id) }}" method="get" class="center-form">
                 <button type="submit" class="edit-btn" title="Editar">✏️</button>
             </form>
             <button class="delete-button" onclick="deleteAudience('{{ user }}', '{{ audience.id }}', '{{ audience.parceiro }}')">Apagar</button>
@@ -161,7 +167,7 @@
                     <strong>PathSftp:</strong> {{ audience.sftp_path }}
                 </div>
             </div>
-            <form action="{{ url_for('update', user=user, partner=audience.parceiro, id=audience.id) }}" method="get">
+            <form action="{{ url_for('update', user=user, partner=audience.parceiro, id=audience.id) }}" method="get" class="center-form">
                 <button type="submit" class="edit-btn" title="Editar">✏️</button>
             </form>
             <button class="delete-button" onclick="deleteAudience('{{ user }}','{{ audience.id }}', '{{ audience.parceiro }}')">Apagar</button>
