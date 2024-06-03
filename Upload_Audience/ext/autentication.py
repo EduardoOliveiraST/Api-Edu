@@ -19,11 +19,10 @@ def valid_user_login(**kwargs):
             # Se usuário existe
             if existing_entry:
 
-                try: # Verifica se está logado
-                    session[f'user_{user}_logged_in']
+                if session.get(f'user_{user}_logged_in'):  # Verifica se está logado
                     flash('O usuário está logado!', 'warning')
                     return render_template('login.html', form=kwargs['form'])
-                except:
+                else:
 
                     user_id, password_encrypted_database = existing_entry[0], existing_entry[2]
                     if check_password_hash(password_encrypted_database, password):
