@@ -26,15 +26,15 @@ def table_and_database_exists(cursor_principal, **kwargs):
         try:
             if kwargs['parceiro'] == 'Tiktok': # Aqui já validamos que a audiência solicitada não existe no banco de dados, ainda é necessário validar se o banco de dados e tabela existem antes de criar a audiência [PENDING]
                 cursor_principal.execute("BEGIN")
-                query = f'INSERT INTO {TABLE_AUDIENCES} (id_user_insert, db_name, table_name, audience_name, parceiro, advertiser_name) VALUES (?, ?, ?, ?, ?, ?)'
-                cursor_principal.execute(query,(kwargs['id_user_insert'], kwargs['db_name'], kwargs['table_name'], kwargs['audience_name'], kwargs['parceiro'], kwargs['advertiser_name'],))
+                query = f'INSERT INTO {TABLE_AUDIENCES} (id_user_insert, db_name, table_name, audience_name, parceiro, advertiser_name, created_by) VALUES (?, ?, ?, ?, ?, ?, ?)'
+                cursor_principal.execute(query,(kwargs['id_user_insert'], kwargs['db_name'], kwargs['table_name'], kwargs['audience_name'], kwargs['parceiro'], kwargs['advertiser_name'],kwargs['user'],))
                 cursor_principal.execute("COMMIT")
 
 
             elif kwargs['parceiro'] == 'Salesforce':
                 cursor_principal.execute("BEGIN")
-                query = f'INSERT INTO {TABLE_SALES_FORCE} (id_user_insert, db_name, table_name, file_name, parceiro, sftp_path) VALUES (?, ?, ?, ?, ?, ?)'
-                cursor_principal.execute(query,(kwargs['id_user_insert'], kwargs['db_name'], kwargs['table_name'], kwargs['file_name'], kwargs['parceiro'], kwargs['sftp_path'],))
+                query = f'INSERT INTO {TABLE_SALES_FORCE} (id_user_insert, db_name, table_name, file_name, parceiro, sftp_path, created_by) VALUES (?, ?, ?, ?, ?, ?, ?)'
+                cursor_principal.execute(query,(kwargs['id_user_insert'], kwargs['db_name'], kwargs['table_name'], kwargs['file_name'], kwargs['parceiro'], kwargs['sftp_path'],kwargs['user'],))
                 cursor_principal.execute("COMMIT")
             
             success_message = f'Audiência para o {kwargs["parceiro"]} criada com êxito.'

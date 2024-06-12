@@ -26,6 +26,22 @@
         margin-left: 0px;
         margin-bottom: 10px;
     }
+
+    .back-button {
+        margin-top: 20px;
+        padding: 12px 24px;
+        font-size: 16px;
+        cursor: pointer;
+        background-color: #007BFF;
+        color: #fff;
+        border: none;
+        border-radius: 5px;
+        transition: background-color 0.3s ease;
+    }
+
+    .back-button:hover {
+        background-color: #0056b3;
+    }
 </style>
 <body onload="updateForm()">
     <header>
@@ -81,6 +97,10 @@
         </div>
     
     </form>
+
+    <div style="display: flex; align-items: center; justify-content: center; flex-grow: 1;">
+        <button class="back-button" onclick="goBack()">Voltar</button>
+
     <script>
         function list_audiences() {
             window.location.href = "{{ url_for('list_audiences', user=user) }}";
@@ -92,6 +112,10 @@
 
         function logout() {
             window.location.href = "{{ url_for('logout', user=user) }}";
+        }
+
+        function goBack() {
+            window.location.href = "{{ url_for('list_audiences', user=user) }}";
         }
 
         function validateForm() {

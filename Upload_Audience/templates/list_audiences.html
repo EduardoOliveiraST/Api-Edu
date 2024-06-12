@@ -140,7 +140,8 @@
                     <strong>Nome do Banco:</strong> {{ audience.db_name }}<br>
                     <strong>Nome da Tabela:</strong> {{ audience.table_name }}<br>
                     <strong>Parceiro:</strong> {{ audience.parceiro }}<br>
-                    <strong>Adv_Name:</strong> {{ audience.advertiser_name }}
+                    <strong>Adv_Name:</strong> {{ audience.advertiser_name }}<br>
+                    <strong>CreatedBy:</strong> {{ audience.created_by }}
                 </div>
             </div>
             <form action="{{ url_for('update', user=user, partner=audience.parceiro, id=audience.id) }}" method="get" class="center-form">
@@ -164,7 +165,8 @@
                     <strong>Nome da Tabela:</strong> {{ audience.table_name_sf }}<br>
                     <strong>Parceiro:</strong> {{ audience.parceiro }}<br>
                     <strong>Nome do arquivo:</strong> {{ audience.file_name }}<br>
-                    <strong>PathSftp:</strong> {{ audience.sftp_path }}
+                    <strong>PathSftp:</strong> {{ audience.sftp_path }}<br>
+                    <strong>CreatedBy:</strong> {{ audience.created_by }}
                 </div>
             </div>
             <form action="{{ url_for('update', user=user, partner=audience.parceiro, id=audience.id) }}" method="get" class="center-form">

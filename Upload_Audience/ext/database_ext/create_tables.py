@@ -15,6 +15,7 @@ def create_table_audiences(DATABASE):
                     audience_name TEXT,
                     parceiro TEXT,
                     advertiser_name TEXT,
+                    created_by TEXT,
                     FOREIGN KEY (id_user_insert) REFERENCES {TABLE_USERS}(id)
                 )
             ''')
@@ -38,6 +39,7 @@ def create_table_salesforce(DATABASE):
                     file_name TEXT,
                     parceiro TEXT,
                     sftp_path TEXT,
+                    created_by TEXT,
                     FOREIGN KEY (id_user_insert) REFERENCES {TABLE_USERS}(id)
                 )
             ''')
