@@ -16,6 +16,7 @@ def create_table_audiences(DATABASE):
                     parceiro TEXT,
                     advertiser_name TEXT,
                     created_by TEXT,
+                    audience_processed INTEGER CHECK (audience_processed IN (0, 1)),
                     FOREIGN KEY (id_user_insert) REFERENCES {TABLE_USERS}(id)
                 )
             ''')
@@ -40,6 +41,7 @@ def create_table_salesforce(DATABASE):
                     parceiro TEXT,
                     sftp_path TEXT,
                     created_by TEXT,
+                    audience_processed INTEGER CHECK (audience_processed IN (0, 1)),
                     FOREIGN KEY (id_user_insert) REFERENCES {TABLE_USERS}(id)
                 )
             ''')

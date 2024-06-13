@@ -61,9 +61,9 @@ class AudienceResource(Resource):
 
 class AudienceItemResource(Resource):
     @auth.login_required
-    def get(self, platform, audience_id):
+    def get(self, parceiro, audience_id):
         try:
-            if platform in ['Tiktok', 'tiktok']:
+            if parceiro in ['Tiktok', 'tiktok']:
                 audience = list_existing_audiences(audienceid=audience_id)[0]
                 json_audience = {
                         "audience_id": audience[0],
@@ -100,5 +100,13 @@ class DeleteAudience(Resource):
     def get(self, parceiro, audience_id):
         try:
             database_operations.execute('delete_audience', parceiro=parceiro, audience_id=audience_id)
+        except:
+            return abort(404)
+
+class ProcessSuccessAudience(Resource):
+    @auth.login_required
+    def get(self, parceiro, audience_id):
+        try:
+            database_operations.execute('process_success_audience', parceiro=parceiro, audience_id=audience_id)
         except:
             return abort(404)

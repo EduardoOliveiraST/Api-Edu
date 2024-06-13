@@ -23,12 +23,9 @@
                     <strong>CreatedBy:</strong> {{ audience.created_by }}
                 </div>
             </div>
-            <form action="{{ url_for('update', user=user, partner=audience.parceiro, id=audience.id) }}" method="get" class="center-form">
-                <button type="submit" class="edit-btn" title="Editar">✏️</button>
-            </form>
-            <button class="delete-button" onclick="deleteAudience('{{ user }}', '{{ audience.id }}', '{{ audience.parceiro }}')">Apagar</button>
         </div>
         <div class="card-footer">
+            <!-- Adicione qualquer conteúdo adicional no rodapé do cartão aqui -->
         </div>
     </div>
     {% endfor %}
@@ -47,10 +44,6 @@
                     <strong>CreatedBy:</strong> {{ audience.created_by }}
                 </div>
             </div>
-            <form action="{{ url_for('update', user=user, partner=audience.parceiro, id=audience.id) }}" method="get" class="center-form">
-                <button type="submit" class="edit-btn" title="Editar">✏️</button>
-            </form>
-            <button class="delete-button" onclick="deleteAudience('{{ user }}','{{ audience.id }}', '{{ audience.parceiro }}')">Apagar</button>
         </div>
         <div class="card-footer">
         </div>
@@ -70,33 +63,6 @@
         }
         function goBack() {
             window.location.href = "{{ url_for('form_post', user=user) }}";
-        }
-
-        function deleteAudience(user, audienceId, parceiro) {
-            // Confirmar a exclusão com o usuário
-            var confirmDelete = confirm("Tem certeza que deseja excluir esta audiência?");
-            if (confirmDelete) {
-                var csrfToken = document.getElementById('csrf_token').value;
-                fetch(`/delete_audience/${user}/${audienceId}/${parceiro}`, {
-                    method: 'DELETE',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRFToken': csrfToken
-            },
-                })
-                .then(response => response.json())
-                .then(data => {
-                    console.log('Data:', data);
-                    alert(data.message);
-                    // Recarregua a página
-                    location.reload();
-                })
-                .catch(error => {
-                    console.error('Erro ao processar requisição:', error);
-                    alert('Erro ao excluir audiência.');
-                    window.location.href = "{{ url_for('form_post', user=user) }}";
-                });
-            }
         }
     </script>
 </body>

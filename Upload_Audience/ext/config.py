@@ -9,7 +9,6 @@ def read_settings(file_path='settings.toml', environment='default'):
         
     environment_data = settings_data.get(environment, {})
 
-    # Obtém o valor de SQLALCHEMY_DATABASE_URI
     sqlalchemy_database_uri = environment_data.get('SQLALCHEMY_DATABASE_URI', None)
 
     return sqlalchemy_database_uri

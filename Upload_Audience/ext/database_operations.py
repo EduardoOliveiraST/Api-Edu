@@ -26,15 +26,15 @@ def table_and_database_exists(cursor_principal, **kwargs):
         try:
             if kwargs['parceiro'] == 'Tiktok': # Aqui já validamos que a audiência solicitada não existe no banco de dados, ainda é necessário validar se o banco de dados e tabela existem antes de criar a audiência [PENDING]
                 cursor_principal.execute("BEGIN")
-                query = f'INSERT INTO {TABLE_AUDIENCES} (id_user_insert, db_name, table_name, audience_name, parceiro, advertiser_name, created_by) VALUES (?, ?, ?, ?, ?, ?, ?)'
-                cursor_principal.execute(query,(kwargs['id_user_insert'], kwargs['db_name'], kwargs['table_name'], kwargs['audience_name'], kwargs['parceiro'], kwargs['advertiser_name'],kwargs['user'],))
+                query = f'INSERT INTO {TABLE_AUDIENCES} (id_user_insert, db_name, table_name, audience_name, parceiro, advertiser_name, created_by, audience_processed) VALUES (?, ?, ?, ?, ?, ?, ?, ?)'
+                cursor_principal.execute(query,(kwargs['id_user_insert'], kwargs['db_name'], kwargs['table_name'], kwargs['audience_name'], kwargs['parceiro'], kwargs['advertiser_name'],kwargs['user'], '0',))
                 cursor_principal.execute("COMMIT")
 
 
             elif kwargs['parceiro'] == 'Salesforce':
                 cursor_principal.execute("BEGIN")
-                query = f'INSERT INTO {TABLE_SALES_FORCE} (id_user_insert, db_name, table_name, file_name, parceiro, sftp_path, created_by) VALUES (?, ?, ?, ?, ?, ?, ?)'
-                cursor_principal.execute(query,(kwargs['id_user_insert'], kwargs['db_name'], kwargs['table_name'], kwargs['file_name'], kwargs['parceiro'], kwargs['sftp_path'],kwargs['user'],))
+                query = f'INSERT INTO {TABLE_SALES_FORCE} (id_user_insert, db_name, table_name, file_name, parceiro, sftp_path, created_by,audience_processed) VALUES (?, ?, ?, ?, ?, ?, ?, ?)'
+                cursor_principal.execute(query,(kwargs['id_user_insert'], kwargs['db_name'], kwargs['table_name'], kwargs['file_name'], kwargs['parceiro'], kwargs['sftp_path'],kwargs['user'],'0',))
                 cursor_principal.execute("COMMIT")
             
             success_message = f'Audiência para o {kwargs["parceiro"]} criada com êxito.'
@@ -116,10 +116,15 @@ def execute(func, **kwargs):
         if kwargs['parceiro'] == 'Tiktok':
             query = f'SELECT * FROM {TABLE_AUDIENCES} WHERE audience_name = ?  AND parceiro = ?'
             cursor.execute(query, (kwargs['audience_name'], kwargs['parceiro'],))
-
+            audience_processed = cursor.fetchone()
+            audience_processed = audience_processed[-1] if audience_processed else audience_processed
+            error_message = f'[ERROR] Audiência {kwargs["audience_name"]} já é existente.' if not audience_processed else f'[ERROR] Audiência {kwargs["audience_name"]} já foi processada.'
+            
+            cursor.execute(query, (kwargs['audience_name'], kwargs['parceiro'],))
             exists = bool(cursor.fetchone())
+
             if exists:
-                return render_template('form_post.html', user=kwargs['user'], audience_form=kwargs['audience_form'], salesforce_form=kwargs['salesforce_form'], error_message=f'[ERROR] Audiência {kwargs["audience_name"]} já é existente.')
+                return render_template('form_post.html', user=kwargs['user'], audience_form=kwargs['audience_form'], salesforce_form=kwargs['salesforce_form'], error_message=error_message)
         
         
         elif kwargs['parceiro'] == 'Salesforce':
@@ -127,10 +132,14 @@ def execute(func, **kwargs):
             kwargs['sftp_path'] = re.sub(r'[\\/]+', '/', kwargs['sftp_path']) # O path SFTP deve conter '/' em seu campo, se não tiver o HTML força o usuário a inserir, aqui substitui qualquer '\' OU '/' por uma única '/'.
             query = f'SELECT * FROM {TABLE_SALES_FORCE} WHERE file_name = ?  AND parceiro = ?'
             cursor.execute(query, (kwargs['file_name'], kwargs['parceiro'],))
+            audience_processed = cursor.fetchone()
+            audience_processed = audience_processed[-1] if audience_processed else audience_processed
+            error_message = f'[ERROR] Arquivo {kwargs["file_name"]} já é existente.' if not audience_processed else f'[ERROR] Arquivo {kwargs["file_name"]} já foi processado.'
 
+            cursor.execute(query, (kwargs['file_name'], kwargs['parceiro'],))
             exists = bool(cursor.fetchone())
             if exists:
-                return render_template('form_post.html', user=kwargs['user'], audience_form=kwargs['audience_form'], salesforce_form=kwargs['salesforce_form'], error_message=f'[ERROR] Arquivo {kwargs["file_name"]} já é existente.')
+                return render_template('form_post.html', user=kwargs['user'], audience_form=kwargs['audience_form'], salesforce_form=kwargs['salesforce_form'], error_message=error_message)
         
         return table_and_database_exists(cursor, **kwargs)
     
@@ -152,6 +161,16 @@ def execute(func, **kwargs):
             return render_template('form_post.html', user=kwargs['user'], audience_form=kwargs['audience_form'], salesforce_form=kwargs['salesforce_form'], success_message=success_message)
         
         return table_and_database_exists(cursor, **kwargs)
+    
+    def process_success_audience(**kwargs):
+        if kwargs['parceiro'] == 'Tiktok':
+            sql = f"UPDATE {TABLE_AUDIENCES} SET audience_processed = ? WHERE id = ?"
+            cursor.execute(sql, ('1', kwargs['audience_id']))
+        
+        
+        elif kwargs['parceiro'] == 'Salesforce':
+            sql = f"UPDATE {TABLE_SALES_FORCE} SET audience_processed = ? WHERE id = ?"
+            cursor.execute(sql, ('1', kwargs['audience_id']))
 
     with sqlite3.connect(DATABASE) as conn:
         cursor = conn.cursor()

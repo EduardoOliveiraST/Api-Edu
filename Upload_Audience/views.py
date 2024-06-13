@@ -112,6 +112,14 @@ def list_audiences(user):
     csrf_token = generate_csrf()
     return render_template('list_audiences.html', user=user, audiences=audiences, audiences_sf=audiences_sf, csrf_token=csrf_token)
 
+@app.route('/list_processed_audiences/<user>', methods=['GET'])
+@login_required
+def list_processed_audiences(user):
+    audiences = list_existing_audiences(processed_audiences=True)
+    audiences_sf = list_existing_audiences_salesforce(processed_audiences=True)
+    csrf_token = generate_csrf()
+    return render_template('list_processed_audiences.html', user=user, audiences=audiences, audiences_sf=audiences_sf, csrf_token=csrf_token)
+
 # ROTA DE PROCESSAMENTO DE INFORMAÇÕES DA EXCLUSÃO DE AUDIÊNCIAS
 @app.route('/delete_audience/<user>/<int:audience_id>/<parceiro>', methods=['DELETE'])
 @login_required

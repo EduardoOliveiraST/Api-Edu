@@ -21,7 +21,8 @@
     <header>
         <nav>
             <ul>
-                <li><a href="#" onclick="list_audiences('{{ user }}')">Listas de audiência</a></li>
+                <li><a href="#" onclick="list_audiences('{{ user }}')">Listas de processamento</a></li>
+                <li><a href="#" onclick="list_processed_audiences('{{ user }}')">Audiências Processadas</a></li>
                 <li><a href="#" onclick="signup()">Cadastro de usuário</a></li>
             </ul>
         </nav>
@@ -76,6 +77,10 @@
         
         function signup() {
             window.location.href = "{{ url_for('signup', user=user) }}";
+        }
+
+        function list_processed_audiences() {
+            window.location.href = "{{ url_for('list_processed_audiences', user=user) }}";
         }
 
         function logout() {
